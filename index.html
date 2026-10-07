@@ -233,6 +233,41 @@ h1{margin:0;font:700 22px/1.2 var(--f-head)}
 .call ul{margin:7px 0 10px;padding-left:18px;display:grid;gap:4px;font-size:13.5px;line-height:1.45;color:var(--ink-2)}
 .call-a{display:flex;flex-wrap:wrap;align-items:center;gap:12px;font-size:13px}
 .link-btn{border:0;background:none;padding:0;color:var(--accent);font-size:13px;font-weight:500;cursor:pointer}
+/* инструкция */
+.drawer.wide{width:min(580px,100%)}
+.guide .lead{margin:0;font-size:14.5px;line-height:1.55;color:var(--ink-2)}
+.g-sec{margin-top:22px;padding-top:18px;border-top:1px solid var(--line)}
+.guide h3{margin:0 0 14px;font:600 16.5px/1.3 var(--f-head)}
+.g-p{margin:12px 0 0;font-size:13.5px;line-height:1.5;color:var(--ink-2)}
+.guide .btn,.guide .fbtn,.guide .pbtn{cursor:default}
+.guide .btn:hover{border-color:var(--line-strong)}
+.g-steps{display:grid;grid-template-columns:max-content minmax(0,1fr);column-gap:16px}
+.g-vis{display:flex;flex-direction:column;align-items:flex-start}
+.g-ln{position:relative;flex:1;min-height:18px;width:10px;margin:3px 0 3px 13px;background:linear-gradient(var(--link),var(--link)) 50% 0/1.6px calc(100% - 6px) no-repeat}
+.g-ln::after{content:"";position:absolute;left:0;bottom:0;border-style:solid;border-width:7px 5px 0;border-color:var(--link) transparent transparent}
+.g-txt{padding:2px 0 14px;font-size:13.5px;line-height:1.45;color:var(--ink-2)}
+.g-txt b{display:block;margin-bottom:1px;font-size:14px;font-weight:600;color:var(--ink)}
+.g-root{display:block;padding:7px 12px 8px;border-radius:10px;background:var(--root-bg);color:var(--root-ink);font:700 14px/1.2 var(--f-head);white-space:nowrap}
+.g-area{display:block;padding:5px 10px 6px;border-radius:9px;background:var(--surface);border:2px solid var(--ink);font:600 13.5px/1.25 var(--f-head)}
+.g-task{display:block;width:124px;padding:6px 9px 7px;border:1.5px solid;border-radius:9px}
+.g-subs{display:grid;gap:5px;width:124px;padding:5px;border-radius:8px;background:var(--surface);border:1px solid var(--line)}
+.g-subs .tag{height:21px;padding:0 7px;font-size:11.5px}
+.g-sub{display:block;padding:4px 7px 5px;border:1.5px solid;border-radius:7px;font-size:12px;font-weight:500}
+.g-rows{list-style:none;margin:0;padding:0;display:grid;gap:12px}
+.g-row{display:grid;grid-template-columns:var(--gw,118px) minmax(0,1fr);gap:6px 16px;align-items:start;font-size:13.5px;line-height:1.45;color:var(--ink-2)}
+.g-v{display:flex;flex-wrap:wrap;align-items:center;gap:6px}
+.g-st{display:inline-flex;padding:4px 9px 5px;border:1.5px solid;border-radius:8px}
+.g-tools{display:inline-flex;align-items:center;gap:6px}
+.g-demo-wrap{display:grid;grid-template-columns:186px minmax(0,1fr);gap:14px 18px;align-items:start}
+.box.task.g-demo,.box.task.g-demo:hover{width:186px;cursor:default;box-shadow:none}
+.g-notes{list-style:none;margin:0;padding:0;display:grid;gap:9px;font-size:13.5px;line-height:1.5;color:var(--ink-2)}
+.g-notes .who{color:var(--ink)}
+.g-notes .who.none{color:var(--no-ink)}
+.g-ex{margin-top:12px;padding:10px 12px;border-radius:10px;background:var(--surface-2);border:1px solid var(--line)}
+.g-a{color:var(--accent);font-weight:600}
+@media (max-width:600px){
+  .g-stack .g-row,.g-demo-wrap{grid-template-columns:minmax(0,1fr)}
+}
 @media (prefers-reduced-motion:reduce){ .box{transition:none} }
 </style>
 
@@ -244,6 +279,7 @@ h1{margin:0;font:700 22px/1.2 var(--f-head)}
       <p class="sub" id="sub"></p>
     </div>
     <div class="head-act">
+      <button type="button" class="btn" id="guide-btn">Как читать карту</button>
       <button type="button" class="btn" id="detail-btn" aria-pressed="false">Решения и вопросы на схеме</button>
       <button type="button" class="btn" id="calls-btn">Созвоны</button>
     </div>
@@ -697,6 +733,8 @@ function drawLinks() {
     if (narrow.matches) trunk(task.x + 12 * k, task.y + task.h, subcols, 18 * k);
     else bus(task.x + Math.min(task.w / 2, 40 * k), task.y + task.h, subcols, subcols[0].y - 13 * k);
   });
+  svg.setAttribute("width", 0); /* иначе холст меряется вместе со старым слоем стрелок и не сжимается */
+  svg.setAttribute("height", 0);
   svg.setAttribute("width", canvas.scrollWidth);
   svg.setAttribute("height", canvas.scrollHeight);
   svg.innerHTML = h;
@@ -889,8 +927,106 @@ function callsDrawerHTML() {
   });
   return h;
 }
-function openDrawer(html) {
+/* ---------- инструкция ---------- */
+const GUIDE = "instrukciya";
+function guideHTML() {
+  const day = n => { const t = new Date(Date.now() + n * 864e5); return t.getDate() + " " + MS[t.getMonth()]; };
+  const ppl = Object.keys(D.people).filter(x => cards.some(c => c.who === x));
+  const p1 = person(ppl[0]), p2 = person(ppl[1] || ppl[0]);
+  const open1 = cards.filter(c => c.who === ppl[0] && c.s !== "done").length;
+  const nq = cards.reduce((a, c) => a + c.q.length, 0);
+  const nw = cards.reduce((a, c) => a + c.warn.length, 0);
+  const st = x => `<span class="box st-${x} g-st"><span class="b-top">${IC[x]}${LABEL[x]}</span></span>`;
+  const mk = (x, g, n) => `<span class="mk ${x}"><i class="gl ${x}" aria-hidden="true">${g}</i>${n}</span>`;
+  const step = (vis, title, text, last) => `<div class="g-vis">${vis}${last ? "" : '<i class="g-ln" aria-hidden="true"></i>'}</div><div class="g-txt"><b>${title}</b>${text}</div>`;
+  const row = (vis, text) => `<li class="g-row"><div class="g-v">${vis}</div><div>${text}</div></li>`;
+  return `<div class="guide">
+<h2 id="dr-title">Как читать карту</h2>
+<p class="lead">Здесь весь проект «Модуль голоса» на одной схеме: что сделано, что в работе, кто за что отвечает и какие вопросы открыты. Карту обновляем после каждого созвона. Дата обновления и следующего созвона — под заголовком.</p>
+
+<section class="g-sec"><h3>Как устроена схема</h3>
+<div class="g-steps">
+${step('<span class="g-root">Модуль голоса</span>', "Весь проект", "Сколько задач сделано и когда следующий созвон.")}
+${step(`<span class="g-area">${esc(D.areas[0].t)}</span>`, "Ветки", "Большие направления работы. Стоят в ряд слева направо.")}
+${step(`<span class="tag t-doing">${IC.doing}В работе <b>2</b></span>`, "Колонки статусов", "Под каждой веткой её задачи разложены по статусам. Колонки есть только у тех статусов, что встречаются в ветке.")}
+${step('<span class="box st-doing g-task"><span class="b-t">Задача</span></span>', "Задачи", "Нажмите на задачу, чтобы открыть подробности.")}
+${step(`<span class="g-subs"><span class="tag t-todo">${IC.todo}Не начато <b>1</b></span><span class="box st-todo g-sub">Подзадача</span></span>`, "Подзадачи", "Если они есть, под задачей свой маленький канбан по статусам.", true)}
+</div>
+<p class="g-p">Стрелки всегда идут сверху вниз: от проекта к веткам, от веток к задачам.</p>
+</section>
+
+<section class="g-sec"><h3>Статусы</h3>
+<ul class="g-rows">
+${row(st("done"), "Готово.")}
+${row(st("doing"), "Сейчас этим занимаются.")}
+${row(st("wait"), "Работа стоит, пока другие не ответят или не сделают свою часть. Чего именно ждём — написано в задаче.")}
+${row(st("todo"), "Ещё не начинали.")}
+${row(st("paused"), "Решили вернуться к этому позже. У таких блоков рамка пунктиром.")}
+</ul>
+<p class="g-p">Теми же цветами окрашены колонки, подзадачи и кнопки в шапке.</p>
+</section>
+
+<section class="g-sec"><h3>Что на блоке задачи</h3>
+<div class="g-demo-wrap">
+<div class="box task st-doing g-demo" aria-hidden="true"><div class="due">до ${day(7)}</div><div class="b-t">Название задачи</div><div class="b-bot"><span class="who"><span class="av">${esc(p1.ini)}</span>${esc(p1.name)}</span><span class="marks">${mk("q", "?", 2)}${mk("w", "!", 1)}</span></div></div>
+<ul class="g-notes">
+<li><span class="due">до ${day(7)}</span> — срок. Если он прошёл, а задача не готова, он красный: <span class="due late">срок был ${day(-3)}</span></li>
+<li><span class="who"><span class="av">${esc(p1.ini)}</span>${esc(p1.name)} <span class="help">+ ${esc(p2.name)}</span></span> — ответственный, всегда один человек. После «+» — кто помогает.</li>
+<li><span class="who none"><span class="av none">?</span>Не назначено</span> — ответственного пока нет.</li>
+<li>${mk("q", "?", 2)} — открытые вопросы, ${mk("w", "!", 1)} — на что обратить внимание: риски и расхождения.</li>
+<li>Цвет блока — статус.</li>
+</ul>
+</div>
+</section>
+
+<section class="g-sec"><h3>Как найти нужное</h3>
+<ul class="g-rows g-stack" style="--gw:176px">
+${row(`<span class="fbtn t-doing">${IC.doing}В работе <b>${cards.filter(c => c.s === "doing").length}</b></span>`, "Подсвечивает задачи с этим статусом, остальные бледнеют. Сама схема не перестраивается.")}
+${row(`<span class="fbtn t-q"><i class="gl" aria-hidden="true">?</i>Вопросы <b>${nq}</b></span>`, "Задачи с открытыми вопросами.")}
+${row(`<span class="fbtn t-w"><i class="gl" aria-hidden="true">!</i>Внимание <b>${nw}</b></span>`, "Задачи, где есть риски или расхождения.")}
+${row(`<span class="pbtn"><span class="av">${esc(p1.ini)}</span>${esc(p1.name)} <b>${open1}</b></span>`, "Задачи человека. Число — сколько из них ещё не сделано.")}
+${row(`<span class="pbtn none"><span class="av none">?</span>Не назначено <b>${cards.filter(c => !c.who).length}</b></span>`, "Задачи без ответственного.")}
+</ul>
+<p class="g-p">Кнопки можно сочетать, например «${esc(p1.name)}» и «В работе». Повторное нажатие или «Показать все» снимает подсветку.</p>
+<p class="g-p">Строка «Ветки:» над схемой быстро переносит к нужной ветке.</p>
+</section>
+
+<section class="g-sec"><h3>Подробности по задаче</h3>
+<p class="g-p">Нажмите на задачу или подзадачу — справа откроется карточка: ответственный и срок, ссылка на задачу в Битриксе, подзадачи, решения, вопросы и история.</p>
+<div class="g-ex" aria-hidden="true"><ul class="ents"><li><div class="e-when"><span class="g-a">19 авг</span><span>12:40</span></div><div>Что решили на созвоне</div></li></ul></div>
+<p class="g-p">У каждой записи дата созвона и минута в записи. Нажмите на дату — откроется этот созвон в Битриксе.</p>
+<p class="g-p">Ссылку из адресной строки можно переслать коллеге — у него откроется та же задача.</p>
+<ul class="g-rows g-stack" style="--gw:228px;margin-top:16px">
+${row('<span class="btn">Решения и вопросы на схеме</span>', "Показывает решения, вопросы и чего ждём прямо на блоках, без кликов.")}
+${row('<span class="btn">Созвоны</span>', "Что решили на каждом созвоне. «Что обсуждали» подсветит задачи с этого созвона.")}
+</ul>
+<p class="g-p">Пометка «не подтверждено» — эти сведения ещё нужно проверить.</p>
+</section>
+
+<section class="g-sec"><h3>Как двигать схему</h3>
+<p class="g-p" style="margin:0 0 14px">Схема шире экрана. Чтобы увидеть соседние ветки, тяните её мышью или листайте трекпадом. Кнопки масштаба — внизу слева.</p>
+<ul class="g-rows g-stack" style="--gw:150px">
+${row('<span class="g-tools"><span class="btn icon">−</span><span class="zval">100%</span><span class="btn icon">+</span></span>', "Масштаб. Ещё можно щипком на трекпаде или колесом мыши с зажатым Ctrl или ⌘.")}
+${row('<span class="btn">Вся схема</span>', "Уместит всю схему на экране.")}
+${row('<span class="btn">Обычный размер</span>', "Вернёт масштаб 100%.")}
+</ul>
+<p class="g-p">На телефоне ветки и колонки идут друг под другом — просто листайте вниз.</p>
+</section>
+
+<section class="g-sec"><h3>Если что-то не так</h3>
+<p class="g-p" style="margin:0">Карту ведёт ${esc(person("a").full)}. Заметили устаревший статус или ошибку — напишите Андрею, исправим.</p>
+</section>
+</div>`;
+}
+function openGuide() {
+  openId = null;
+  markSelected();
+  openDrawer(guideHTML(), true);
+  setHash(GUIDE);
+}
+function openDrawer(html, wide) {
   if (drawer.hidden) lastFocus = document.activeElement;
+  drawer.classList.toggle("wide", !!wide);
   $("#dr-body").innerHTML = html;
   drawer.hidden = false;
   scrim.hidden = false;
@@ -931,6 +1067,7 @@ $("#content").addEventListener("keydown", e => {
   openCard(el.dataset.task);
 });
 $("#calls-btn").addEventListener("click", () => { openId = null; markSelected(); openDrawer(callsDrawerHTML()); });
+$("#guide-btn").addEventListener("click", openGuide);
 $("#dr-close").addEventListener("click", closeDrawer);
 scrim.addEventListener("click", closeDrawer);
 $("#dr-body").addEventListener("click", e => {
@@ -944,7 +1081,8 @@ $("#dr-body").addEventListener("click", e => {
 document.addEventListener("keydown", e => { if (e.key === "Escape" && !drawer.hidden) closeDrawer(); });
 window.addEventListener("hashchange", () => {
   const id = decodeURIComponent(location.hash.slice(1));
-  if (byId.has(id) && id !== openId) openCard(id);
+  if (id === GUIDE) openGuide();
+  else if (byId.has(id) && id !== openId) openCard(id);
 });
 
 /* ---------- старт ---------- */
@@ -956,7 +1094,8 @@ narrow.addEventListener("change", redraw);
 if (window.ResizeObserver) new ResizeObserver(redraw).observe(board);
 if (document.fonts && document.fonts.ready) document.fonts.ready.then(redraw);
 const first = decodeURIComponent(location.hash.slice(1));
-if (byId.has(first)) {
+if (first === GUIDE) openGuide();
+else if (byId.has(first)) {
   const el = $(`.box.task[data-task="${first}"]`);
   if (el) el.scrollIntoView({ block: "center", inline: "center" });
   openCard(first);
