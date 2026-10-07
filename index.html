@@ -154,10 +154,7 @@ h1{margin:0;font:700 22px/1.2 var(--f-head)}
 .subcol-body{display:grid;gap:6px;margin-top:5px}
 .b-top{display:flex;align-items:center;gap:5px;font-size:11.5px;font-weight:600}
 .st-done .b-top{color:var(--done-ink)} .st-doing .b-top{color:var(--doing-ink)} .st-wait .b-top{color:var(--wait-ink)} .st-paused .b-top{color:var(--paused-ink)} .st-todo .b-top{color:var(--todo-ink)}
-.due{font-size:11.5px;font-weight:600;color:var(--ink-2);font-variant-numeric:tabular-nums}
-.due.late{color:var(--no-ink);font-weight:700}
 .b-t{font-size:13px;line-height:1.3;font-weight:600;text-wrap:pretty}
-.box.task .due + .b-t{margin-top:2px}
 .box.sub .b-t{margin-top:2px;font-size:12.5px;font-weight:500}
 .b-bot{display:flex;align-items:center;justify-content:space-between;gap:6px;margin-top:6px;font-size:12px}
 .who{display:inline-flex;align-items:center;gap:5px;font-weight:500;min-width:0}
@@ -208,7 +205,6 @@ h1{margin:0;font:700 22px/1.2 var(--f-head)}
 .dr-crumb{font-size:12.5px;color:var(--ink-3)}
 .dr-body h2{margin:4px 0 12px;font:700 21px/1.28 var(--f-head);text-wrap:balance}
 .dr-meta{display:flex;flex-wrap:wrap;align-items:center;gap:10px;font-size:13px;color:var(--ink-2)}
-.dr-meta .late{color:var(--no-ink);font-weight:600}
 .dr-owner{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin-top:12px;font-size:13.5px}
 .bx{display:inline-block;margin-top:12px;font-size:13px}
 .dr-note{margin:14px 0 0;font-size:14px;line-height:1.55;max-width:62ch}
@@ -316,7 +312,7 @@ h1{margin:0;font:700 22px/1.2 var(--f-head)}
    Схема: «Модуль голоса» → ветки из areas в ряд слева направо → у каждой ветки канбан по статусам, которые в ней есть → задачи.
    Подзадачи из subs рисуются под своей задачей собственным канбаном по статусам.
    s: done сделано · doing в работе · wait ждём · todo не начато · paused отложено — от s зависит колонка
-   who: один ответственный (ключ из people) или null · help: кто помогает · due: срок · bx: задача в Битриксе
+   who: один ответственный (ключ из people) или null · help: кто помогает · bx: задача в Битриксе
    wait: чего ждём · subs: подзадачи [{t, s}] · dec: решения · q: вопросы · warn: на что обратить внимание
    facts: справка · log: остальная история. Записи dec, facts, log: [источник, минута, текст],
    источник — id созвона или ключ из sources. */
@@ -420,7 +416,7 @@ const DATA = {
         note: "Четыре стадии, как у отправителей: принудительная клиентская, пул, схема отправителя, агрегатор.",
         dec: [["0916", "13:32", "Все четыре стадии закладываем сразу, даже замену на агрегаторе"]],
         log: [["0805", "1:04:40", "Спорили: Николай не видел смысла подменять номер, Андрей за"], ["0916", "15:05", "Николай: докрутить замены несложно"], ["ans", "", "Пока не сделаны"]] },
-      { id: "upload", t: "Загрузка роликов в кабинеты Голоса", s: "doing", who: "i", due: "2026-09-28", bx: 2151253,
+      { id: "upload", t: "Загрузка роликов в кабинеты Голоса", s: "doing", who: "i", bx: 2151253,
         note: "Процесс после маршрутизации: смотрит, в какие кабинеты уходят звонки, и заливает туда ролики, которых там ещё нет.",
         subs: [{ t: "Перенести рандомизатор в Python-скрипт отправки", s: "doing" }],
         dec: [["0916", "36:12", "Отдельный процесс сразу после маршрутизации"],
@@ -435,7 +431,7 @@ const DATA = {
               ["0916", "27:32", "Рассылку модерируем целиком, вместе с СМС"]],
         q: ["Как проверять шаблон СМС до отправки, если отправитель известен только после замен, а СМС создаётся по нажатию?"],
         log: [["0916", "16:45", "Николай взял"], ["0925", "04:29", "Сделаны уровни и стоп-слова"], ["0925", "07:02", "Проверку шаблонов отложили"]] },
-      { id: "send", t: "Тарификация и отправка", s: "todo", who: "n", due: "2026-10-07", bx: 2155137,
+      { id: "send", t: "Тарификация и отправка", s: "todo", who: "n", bx: 2155137,
         note: "Отправляем пачку из 20 звонков, дальше скользящим окном: пришёл статус по одному звонку — уходит следующий. В минус клиент уйдёт максимум на одно окно.",
         dec: [["0925", "27:19", "Скользящее окно по 20 звонков"],
               ["0925", "24:19", "Не делаем холд денег: стоимость звонка заранее не узнать"],
@@ -470,7 +466,7 @@ const DATA = {
         facts: [["0805", "42:31", "У Голоса себес общий средний, не по поставщикам. Сверку с поставщиками обсуждать с закупом"]] }
     ] },
     { id: "extras", t: "Доп. услуги", note: "Всё, что сверх секунд разговора. С 25 сентября ведём через доп. услуги.", kids: [
-      { id: "extras-core", t: "Поставщики, тарифы и себестоимость доп. услуг", s: "todo", who: "i", due: "2026-10-07", bx: 2155123,
+      { id: "extras-core", t: "Поставщики, тарифы и себестоимость доп. услуг", s: "todo", who: "i", bx: 2155123,
         subs: [{ t: "Сущность «поставщик доп. услуги» с ценой и себестоимостью", s: "todo" },
                { t: "Тариф за синтез ролика", s: "todo" },
                { t: "Тариф за распознавание, за секунду", s: "wait", note: "ждём секунды от Голоса" },
@@ -506,7 +502,7 @@ const DATA = {
         facts: [["0805", "21:35", "Маркировка — плюс 0,6 коп. за звонок"]] }
     ] },
     { id: "golos", t: "Доработки на стороне Голоса", note: "Разработчик — Миша, руководитель разработки — Данила Евграфов.", kids: [
-      { id: "seconds", t: "Секунды распознавания в API Голоса", s: "wait", who: "n", due: "2026-10-07", bx: 2155133,
+      { id: "seconds", t: "Секунды распознавания в API Голоса", s: "wait", who: "n", bx: 2155133,
         wait: "ответа Миши: может, Голос уже их отдаёт",
         note: "Без секунд распознавания не посчитать доп. услугу распознавания.",
         dec: [["0925", "44:08", "Евграфова в задачу добавим после ответа Миши"]],
@@ -569,7 +565,6 @@ const MG = ["января", "февраля", "марта", "апреля", "м�
 const dp = iso => iso.split("-").map(Number);
 const dShort = iso => { const [, m, d] = dp(iso); return d + " " + MS[m - 1]; };
 const dLong = iso => { const [, m, d] = dp(iso); return d + " " + MG[m - 1]; };
-const today = (() => { const t = new Date(); return t.getFullYear() + "-" + String(t.getMonth() + 1).padStart(2, "0") + "-" + String(t.getDate()).padStart(2, "0"); })();
 const narrow = matchMedia("(max-width: 700px)");
 
 const ORDER = ["done", "doing", "wait", "todo", "paused"];
@@ -599,7 +594,6 @@ D.areas.forEach(a => a.kids.forEach(c => {
 const bxUrl = id => `${D.portal}/workgroups/group/${D.bxGroup}/tasks/task/view/${id}/`;
 const callUrl = c => `${D.portal}/call/detail/${c.n}`;
 const person = k => D.people[k];
-const isLate = c => c.due && c.s !== "done" && c.due < today;
 
 /* ---------- фильтры: подсвечивают, схема не меняется ---------- */
 const F = { s: "", who: "", q: false, w: false, call: "" };
@@ -616,7 +610,6 @@ const subMatches = (s, c) => (!F.s || s.s === F.s) && matchesExceptStatus(c);
 
 /* ---------- разметка ---------- */
 const tagHTML = s => `<span class="tag t-${s}">${IC[s]}${LABEL[s]}</span>`;
-const dueText = c => (c.due ? `${isLate(c) ? "срок был " : "до "}${dShort(c.due)}` : "");
 function srcShort(id) {
   const call = callById.get(id);
   if (call) return dShort(call.d);
@@ -647,7 +640,6 @@ function taskHTML(c) {
   det += c.q.map(qHTML).join("") + c.warn.map(wHTML).join("");
   if (c.unconf) det += `<div class="unconf">Не подтверждено: ${esc(c.unconf)}</div>`;
   let h = `<div class="tk" data-tk="${c.id}"><div class="box task st-${c.s}" data-task="${c.id}" tabindex="0" role="button" aria-label="${esc(c.t)}. ${LABEL[c.s]}">`
-    + (c.due ? `<div class="due${isLate(c) ? " late" : ""}">${dueText(c)}</div>` : "")
     + `<div class="b-t">${esc(c.t)}</div>`
     + `<div class="b-bot">${whoHTML(c)}<span class="marks">${marks}</span></div>`
     + (det ? `<div class="b-det">${det}</div>` : "")
@@ -899,7 +891,7 @@ function subsListHTML(c) {
 function cardDrawerHTML(c) {
   const p = c.who ? person(c.who) : null;
   let h = `<div class="dr-crumb">${esc(c.area.t)}</div><h2 id="dr-title">${esc(c.t)}</h2>`;
-  h += `<div class="dr-meta">${tagHTML(c.s)}${c.due ? `<span class="${isLate(c) ? "late" : ""}">${dueText(c)}</span>` : ""}${c.upd ? `<span>обновлено ${dShort(c.upd)}</span>` : ""}</div>`;
+  h += `<div class="dr-meta">${tagHTML(c.s)}${c.upd ? `<span>обновлено ${dShort(c.upd)}</span>` : ""}</div>`;
   h += p
     ? `<div class="dr-owner"><span class="av">${esc(p.ini)}</span><span>${esc(p.full)}</span><span class="dim-t">${esc(p.role)}</span>${c.help.length ? `<span class="dim-t">· помогает ${esc(c.help.map(x => person(x).name).join(", "))}</span>` : ""}</div>`
     : '<div class="dr-owner" style="color:var(--no-ink)"><span class="av none">?</span><span>Ответственный не назначен</span></div>';
@@ -930,7 +922,6 @@ function callsDrawerHTML() {
 /* ---------- инструкция ---------- */
 const GUIDE = "instrukciya";
 function guideHTML() {
-  const day = n => { const t = new Date(Date.now() + n * 864e5); return t.getDate() + " " + MS[t.getMonth()]; };
   const ppl = Object.keys(D.people).filter(x => cards.some(c => c.who === x));
   const p1 = person(ppl[0]), p2 = person(ppl[1] || ppl[0]);
   const open1 = cards.filter(c => c.who === ppl[0] && c.s !== "done").length;
@@ -968,9 +959,8 @@ ${row(st("paused"), "Решили вернуться к этому позже. �
 
 <section class="g-sec"><h3>Что на блоке задачи</h3>
 <div class="g-demo-wrap">
-<div class="box task st-doing g-demo" aria-hidden="true"><div class="due">до ${day(7)}</div><div class="b-t">Название задачи</div><div class="b-bot"><span class="who"><span class="av">${esc(p1.ini)}</span>${esc(p1.name)}</span><span class="marks">${mk("q", "?", 2)}${mk("w", "!", 1)}</span></div></div>
+<div class="box task st-doing g-demo" aria-hidden="true"><div class="b-t">Название задачи</div><div class="b-bot"><span class="who"><span class="av">${esc(p1.ini)}</span>${esc(p1.name)}</span><span class="marks">${mk("q", "?", 2)}${mk("w", "!", 1)}</span></div></div>
 <ul class="g-notes">
-<li><span class="due">до ${day(7)}</span> — срок. Если он прошёл, а задача не готова, он красный: <span class="due late">срок был ${day(-3)}</span></li>
 <li><span class="who"><span class="av">${esc(p1.ini)}</span>${esc(p1.name)} <span class="help">+ ${esc(p2.name)}</span></span> — ответственный, всегда один человек. После «+» — кто помогает.</li>
 <li><span class="who none"><span class="av none">?</span>Не назначено</span> — ответственного пока нет.</li>
 <li>${mk("q", "?", 2)} — открытые вопросы, ${mk("w", "!", 1)} — на что обратить внимание: риски и расхождения.</li>
@@ -992,7 +982,7 @@ ${row(`<span class="pbtn none"><span class="av none">?</span>Не назначе
 </section>
 
 <section class="g-sec"><h3>Подробности по задаче</h3>
-<p class="g-p">Нажмите на задачу или подзадачу — справа откроется карточка: ответственный и срок, ссылка на задачу в Битриксе, подзадачи, решения, вопросы и история.</p>
+<p class="g-p">Нажмите на задачу или подзадачу — справа откроется карточка: ответственный, ссылка на задачу в Битриксе, подзадачи, решения, вопросы и история.</p>
 <div class="g-ex" aria-hidden="true"><ul class="ents"><li><div class="e-when"><span class="g-a">19 авг</span><span>12:40</span></div><div>Что решили на созвоне</div></li></ul></div>
 <p class="g-p">У каждой записи дата созвона и минута в записи. Нажмите на дату — откроется этот созвон в Битриксе.</p>
 <p class="g-p">Ссылку из адресной строки можно переслать коллеге — у него откроется та же задача.</p>
