@@ -1,0 +1,966 @@
+<!doctype html><html lang="ru"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="robots" content="noindex, nofollow"><style>:root{color-scheme:light;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0;font:14px system-ui,sans-serif;background:#fafafa}img{max-width:100%}[hidden]{display:none!important}</style></head><body><meta charset="utf-8">
+<title>Карта модуля голоса</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bitter:wght@600;700&family=Golos+Text:wght@400;500;600;700&display=swap">
+<style>
+:root{
+  --f-ui:"Golos Text",system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;
+  --f-head:Bitter,Georgia,"Times New Roman",serif;
+  --bg:#EEF1F5;
+  --surface:#FFFFFF;
+  --surface-2:#F6F7FA;
+  --col:#E6EAF0;
+  --line:#DCE1E9;
+  --line-strong:#BFC7D4;
+  --link:#8E99AC;
+  --ink:#131826;
+  --ink-2:#4A5467;
+  --ink-3:#7A8395;
+  --accent:#3457DC;
+  --focus:rgba(52,87,220,.26);
+  --done:#1E9A68; --done-bg:#E1F4EA; --done-ink:#0A6441;
+  --doing:#3457DC; --doing-bg:#E5EAFC; --doing-ink:#2340AE;
+  --wait:#D07A0C; --wait-bg:#FCEBD3; --wait-ink:#874900;
+  --paused:#7C8597; --paused-bg:#EAECF0; --paused-ink:#454F62;
+  --todo:#A1A9B9; --todo-ink:#4A5467;
+  --ask:#7A4ED6; --ask-bg:#F1EBFD; --ask-ink:#5332A5;
+  --no:#CC4235; --no-bg:#FBE9E6; --no-ink:#9E2D1E;
+  --on:#FFFFFF;
+  --root-bg:#131826; --root-ink:#F3F5FA; --root-ink-2:#A9B2C6;
+  --scrim:rgba(12,16,28,.32);
+  --shadow:0 20px 60px -24px rgba(19,24,38,.45);
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    color-scheme:dark;
+    --bg:#0A0B10; --surface:#14161E; --surface-2:#191C26; --col:#12141B;
+    --line:rgba(255,255,255,.10); --line-strong:rgba(255,255,255,.22); --link:rgba(255,255,255,.38);
+    --ink:#EEF1F8; --ink-2:#A6AFC2; --ink-3:#737C90;
+    --accent:#7C98FF; --focus:rgba(124,152,255,.3);
+    --done:#3FD9A0; --done-bg:rgba(63,217,160,.14); --done-ink:#86ECC6;
+    --doing:#7C98FF; --doing-bg:rgba(124,152,255,.17); --doing-ink:#B3C4FF;
+    --wait:#FFB449; --wait-bg:rgba(255,180,73,.15); --wait-ink:#FFD08B;
+    --paused:#98A2B8; --paused-bg:rgba(152,162,184,.15); --paused-ink:#C7CEDC;
+    --todo:#66708A; --todo-ink:#B7BFD0;
+    --ask:#B98CFF; --ask-bg:rgba(185,140,255,.15); --ask-ink:#D8C0FF;
+    --no:#FF7C6F; --no-bg:rgba(255,124,111,.14); --no-ink:#FFB3AA;
+    --on:#0B0D14; --root-bg:#222842; --root-ink:#EEF1F8; --root-ink-2:#A6AFC2;
+    --scrim:rgba(0,0,0,.55); --shadow:0 20px 60px -20px rgba(0,0,0,.85);
+  }
+}
+:root[data-theme="dark"]{
+  color-scheme:dark;
+  --bg:#0A0B10; --surface:#14161E; --surface-2:#191C26; --col:#12141B;
+  --line:rgba(255,255,255,.10); --line-strong:rgba(255,255,255,.22); --link:rgba(255,255,255,.38);
+  --ink:#EEF1F8; --ink-2:#A6AFC2; --ink-3:#737C90;
+  --accent:#7C98FF; --focus:rgba(124,152,255,.3);
+  --done:#3FD9A0; --done-bg:rgba(63,217,160,.14); --done-ink:#86ECC6;
+  --doing:#7C98FF; --doing-bg:rgba(124,152,255,.17); --doing-ink:#B3C4FF;
+  --wait:#FFB449; --wait-bg:rgba(255,180,73,.15); --wait-ink:#FFD08B;
+  --paused:#98A2B8; --paused-bg:rgba(152,162,184,.15); --paused-ink:#C7CEDC;
+  --todo:#66708A; --todo-ink:#B7BFD0;
+  --ask:#B98CFF; --ask-bg:rgba(185,140,255,.15); --ask-ink:#D8C0FF;
+  --no:#FF7C6F; --no-bg:rgba(255,124,111,.14); --no-ink:#FFB3AA;
+  --on:#0B0D14; --root-bg:#222842; --root-ink:#EEF1F8; --root-ink-2:#A6AFC2;
+  --scrim:rgba(0,0,0,.55); --shadow:0 20px 60px -20px rgba(0,0,0,.85);
+}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+html,body{height:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font:14px/1.45 var(--f-ui);-webkit-font-smoothing:antialiased}
+.app{height:100%;display:flex;flex-direction:column}
+body.dr-open{overflow:hidden}
+button{font:inherit;color:inherit}
+a{color:var(--accent)}
+.ic{width:13px;height:13px;flex:none;display:block}
+
+.head{flex:none;display:grid;gap:10px;padding-block:14px 12px;padding-inline:20px;background:var(--surface);border-bottom:1px solid var(--line);position:relative;z-index:6}
+.head-top{display:flex;flex-wrap:wrap;align-items:flex-start;justify-content:space-between;gap:12px}
+.head-act{display:flex;flex-wrap:wrap;gap:8px}
+h1{margin:0;font:700 22px/1.2 var(--f-head)}
+.sub{margin:3px 0 0;font-size:12.5px;color:var(--ink-2)}
+.row{display:flex;flex-wrap:wrap;align-items:center;gap:7px}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:7px;height:32px;padding:0 13px;border:1px solid var(--line-strong);border-radius:8px;background:var(--surface);color:var(--ink);font-size:13px;font-weight:500;cursor:pointer;white-space:nowrap}
+.btn:hover{border-color:var(--ink-3)}
+.btn[aria-pressed="true"]{background:var(--ink);color:var(--surface);border-color:var(--ink)}
+.fbtn{display:inline-flex;align-items:center;gap:7px;height:30px;padding:0 10px;border:0;border-radius:8px;font-size:13px;font-weight:500;cursor:pointer;white-space:nowrap}
+.fbtn b,.pbtn b{font-weight:700;font-variant-numeric:tabular-nums}
+.fbtn[aria-pressed="true"],.pbtn[aria-pressed="true"]{outline:2px solid currentColor;outline-offset:1px}
+.pbtn{display:inline-flex;align-items:center;gap:7px;height:32px;padding:0 11px 0 4px;border:1px solid var(--line);border-radius:8px;background:var(--surface);color:var(--ink);font-size:13px;font-weight:500;cursor:pointer;white-space:nowrap}
+.pbtn b{color:var(--ink-2)}
+.pbtn.none,.pbtn.none b{color:var(--no-ink)}
+.shown{display:flex;flex-wrap:wrap;align-items:center;gap:10px;font-size:13px;color:var(--ink-2)}
+.btn:focus-visible,.fbtn:focus-visible,.pbtn:focus-visible,.box:focus-visible,.link-btn:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+
+.tag{display:inline-flex;align-items:center;gap:6px;height:24px;padding:0 9px;border-radius:6px;font-size:12.5px;font-weight:600;white-space:nowrap}
+.t-done{background:var(--done-bg);color:var(--done-ink)}
+.t-doing{background:var(--doing-bg);color:var(--doing-ink)}
+.t-wait{background:var(--wait-bg);color:var(--wait-ink)}
+.t-paused{background:var(--paused-bg);color:var(--paused-ink)}
+.t-todo{background:var(--surface);color:var(--todo-ink);box-shadow:inset 0 0 0 1px var(--line-strong)}
+.t-q{background:var(--ask-bg);color:var(--ask-ink)}
+.t-w{background:var(--no-bg);color:var(--no-ink)}
+.gl{display:inline-grid;place-items:center;width:15px;height:15px;border-radius:50%;font:700 10.5px/1 var(--f-ui);font-style:normal;color:var(--on);flex:none}
+.gl.q,.t-q .gl,.note-q .gl{background:var(--ask)}
+.gl.w,.t-w .gl,.note-w .gl{background:var(--no)}
+.av{display:inline-grid;place-items:center;width:22px;height:22px;border-radius:50%;background:var(--ink);color:var(--surface);font:600 9.5px/1 var(--f-ui);letter-spacing:.02em;flex:none}
+.av.none{background:var(--no-bg);color:var(--no-ink);font-size:11px}
+
+/* схема: главный блок, под ним ветки в ряд, у каждой ветки канбан по статусам */
+.nav{display:flex;flex-wrap:wrap;align-items:center;gap:6px;font-size:12.5px;color:var(--ink-3)}
+.nav button{border:0;background:none;padding:2px 6px;border-radius:6px;color:var(--ink-2);font-size:12.5px;font-weight:500;cursor:pointer}
+.nav button:hover{background:var(--surface-2);color:var(--ink)}
+.stage{position:relative;flex:1;min-height:0}
+.scroller{position:absolute;inset:0;overflow:auto;overscroll-behavior:contain}
+.scroller.grab{cursor:grabbing;user-select:none}
+.canvas{position:relative;width:max-content;min-width:100%;padding:24px 28px 90px}
+.links{position:absolute;left:0;top:0;pointer-events:none;overflow:visible;z-index:2}
+.ln{fill:none;stroke:var(--link);stroke-width:1.6;stroke-linejoin:round;stroke-linecap:round}
+.arr{fill:var(--link)}
+.board{position:relative;z-index:1}
+.root-row{display:flex}
+.lanes{display:flex;align-items:flex-start;gap:30px;margin-top:52px}
+.lane{flex:none;padding:12px;border-radius:16px;background:var(--surface-2);border:1px solid var(--line)}
+.box{color:var(--ink)}
+.box.root{display:inline-block;padding:12px 20px 13px;border-radius:14px;background:var(--root-bg);color:var(--root-ink)}
+.r-t{font:700 21px/1.2 var(--f-head)}
+.r-m{margin-top:4px;font-size:12.5px;color:var(--root-ink-2)}
+.box.area{display:inline-flex;flex-wrap:wrap;align-items:baseline;gap:4px 14px;padding:9px 14px 10px;border-radius:12px;background:var(--surface);border:2px solid var(--ink)}
+.a-t{font:600 16px/1.25 var(--f-head)}
+.a-m{font-size:12.5px;color:var(--ink-2)}
+.cols{display:flex;align-items:flex-start;gap:8px;margin-top:30px}
+.col{flex:none;min-width:200px;background:var(--col);border-radius:12px;padding:7px}
+.col-head{display:flex;align-items:center;gap:6px;height:28px;padding:0 9px;border-radius:7px;font-size:12.5px;font-weight:600}
+.col-head b{margin-left:auto;font-variant-numeric:tabular-nums}
+.col-body{display:grid;gap:10px;margin-top:8px}
+.tk{display:block}
+.col .box.task{width:186px}
+.box.task,.box.sub{border:1.5px solid var(--line-strong);background:var(--surface);cursor:pointer;transition:box-shadow .15s,opacity .2s}
+.box.task{padding:7px 9px 8px;border-radius:10px}
+.box.sub{padding:5px 8px 6px;border-radius:8px}
+.box.st-done{background:var(--done-bg);border-color:var(--done)}
+.box.st-doing{background:var(--doing-bg);border-color:var(--doing)}
+.box.st-wait{background:var(--wait-bg);border-color:var(--wait)}
+.box.st-paused{background:var(--paused-bg);border-color:var(--paused);border-style:dashed}
+.box.st-todo{background:var(--surface);border-color:var(--line-strong)}
+.box.task:hover,.box.sub:hover{box-shadow:0 0 0 3px var(--line)}
+.box.sel,.box.hit{box-shadow:0 0 0 3px var(--focus)}
+.dim{opacity:.2}
+.subcols{display:flex;align-items:flex-start;gap:6px;margin:26px 0 4px 12px}
+.subcol{flex:none;width:174px;padding:5px;border-radius:9px;background:var(--surface);border:1px solid var(--line)}
+.subcol-head{display:flex;align-items:center;gap:5px;height:22px;padding:0 7px;border-radius:5px;font-size:11.5px;font-weight:600}
+.subcol-head b{margin-left:auto;font-variant-numeric:tabular-nums}
+.subcol-body{display:grid;gap:6px;margin-top:5px}
+.b-top{display:flex;align-items:center;gap:5px;font-size:11.5px;font-weight:600}
+.st-done .b-top{color:var(--done-ink)} .st-doing .b-top{color:var(--doing-ink)} .st-wait .b-top{color:var(--wait-ink)} .st-paused .b-top{color:var(--paused-ink)} .st-todo .b-top{color:var(--todo-ink)}
+.due{font-size:11.5px;font-weight:600;color:var(--ink-2);font-variant-numeric:tabular-nums}
+.due.late{color:var(--no-ink);font-weight:700}
+.b-t{font-size:13px;line-height:1.3;font-weight:600;text-wrap:pretty}
+.box.task .due + .b-t{margin-top:2px}
+.box.sub .b-t{margin-top:2px;font-size:12.5px;font-weight:500}
+.b-bot{display:flex;align-items:center;justify-content:space-between;gap:6px;margin-top:6px;font-size:12px}
+.who{display:inline-flex;align-items:center;gap:5px;font-weight:500;min-width:0}
+.who.none{color:var(--no-ink)}
+.who .help{font-weight:400;color:var(--ink-3)}
+.marks{display:inline-flex;align-items:center;gap:7px;flex:none}
+.mk{display:inline-flex;align-items:center;gap:3px;font-weight:700;font-variant-numeric:tabular-nums}
+.mk.q{color:var(--ask-ink)} .mk.w{color:var(--no-ink)}
+.b-det{display:none;flex-direction:column;gap:6px;margin-top:7px}
+.detail .b-det{display:flex}
+.dim-t{color:var(--ink-3)}
+.waiting{display:flex;align-items:flex-start;gap:6px;padding:5px 8px;border-radius:7px;background:var(--surface);color:var(--wait-ink);font-size:12px;line-height:1.35}
+.waiting .ic{margin-top:1px}
+.decs{font-size:12px;line-height:1.35;color:var(--ink-2)}
+.lbl{font-size:10.5px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-3)}
+.decs ul{margin:3px 0 0;padding-left:15px;display:grid;gap:2px}
+.decs .d{color:var(--ink-3);white-space:nowrap}
+.note-q,.note-w{display:grid;grid-template-columns:15px minmax(0,1fr);gap:7px;padding:5px 8px;border-radius:7px;font-size:12px;line-height:1.35}
+.note-q{background:var(--ask-bg);color:var(--ask-ink)}
+.note-w{background:var(--no-bg);color:var(--no-ink)}
+.note-q .gl,.note-w .gl{margin-top:1px}
+.unconf{font-size:11.5px;color:var(--wait-ink);font-weight:500}
+
+.tools{position:absolute;left:14px;bottom:14px;display:flex;align-items:center;gap:6px;padding:6px;background:var(--surface);border:1px solid var(--line);border-radius:10px;box-shadow:var(--shadow);z-index:3}
+.zval{min-width:44px;text-align:center;font-size:12px;color:var(--ink-2);font-variant-numeric:tabular-nums}
+.btn.icon{width:32px;padding:0;font-size:17px}
+@media (max-width:700px){
+  .app{height:auto;min-height:100%}
+  .stage{flex:none}
+  .scroller{position:static;overflow:visible}
+  .canvas{width:auto;padding:16px 16px 48px}
+  .head{padding-inline:16px}
+  .tools,.nav{display:none}
+  .lanes{flex-direction:column;align-items:stretch;gap:24px;margin:30px 0 0 30px}
+  .lane{padding:10px}
+  .cols{flex-direction:column;align-items:stretch;gap:20px;margin:20px 0 0 24px}
+  .col{width:auto}
+  .col .box.task{width:auto}
+  .subcols{flex-direction:column;align-items:stretch;gap:16px;margin:18px 0 4px 22px}
+  .subcol{width:auto}
+}
+
+/* подробности */
+.scrim{position:fixed;inset:0;background:var(--scrim);z-index:19}
+.drawer{position:fixed;top:0;right:0;bottom:0;z-index:20;width:min(470px,100%);overflow:auto;overscroll-behavior:contain;background:var(--surface);border-left:1px solid var(--line);box-shadow:var(--shadow);padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+.dr-bar{position:sticky;top:0;display:flex;justify-content:flex-end;padding:12px 16px;background:var(--surface);border-bottom:1px solid var(--line)}
+.dr-body{padding:16px 20px 32px}
+.dr-crumb{font-size:12.5px;color:var(--ink-3)}
+.dr-body h2{margin:4px 0 12px;font:700 21px/1.28 var(--f-head);text-wrap:balance}
+.dr-meta{display:flex;flex-wrap:wrap;align-items:center;gap:10px;font-size:13px;color:var(--ink-2)}
+.dr-meta .late{color:var(--no-ink);font-weight:600}
+.dr-owner{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin-top:12px;font-size:13.5px}
+.bx{display:inline-block;margin-top:12px;font-size:13px}
+.dr-note{margin:14px 0 0;font-size:14px;line-height:1.55;max-width:62ch}
+.dr-unconf{margin:12px 0 0;padding:8px 10px;border-radius:8px;background:var(--wait-bg);color:var(--wait-ink);font-size:13px}
+.sec{margin-top:22px}
+.sec > .lbl{margin-bottom:8px}
+.subs{list-style:none;margin:0;padding:0;display:grid;gap:5px;font-size:13.5px;line-height:1.4}
+.subs li{display:grid;grid-template-columns:14px minmax(0,1fr);gap:7px}
+.subs .ic{margin-top:3px}
+.subs li span{color:var(--ink-2)}
+.si-done{color:var(--done)} .si-doing{color:var(--doing)} .si-wait{color:var(--wait)} .si-paused{color:var(--paused)} .si-todo{color:var(--todo)}
+.sec .note-q,.sec .note-w{font-size:13.5px;margin-top:6px}
+.sec .waiting{font-size:13.5px;background:var(--wait-bg)}
+.ents{list-style:none;margin:0;padding:0;display:grid;gap:10px}
+.ents li{display:grid;grid-template-columns:84px minmax(0,1fr);gap:10px;font-size:13.5px;line-height:1.45}
+.e-when{display:flex;flex-direction:column;font-size:12px;line-height:1.35;color:var(--ink-3);font-variant-numeric:tabular-nums}
+.e-when a{font-weight:600;text-decoration:none}
+.call{padding:14px 0;border-top:1px solid var(--line)}
+.call-h{display:flex;flex-wrap:wrap;align-items:baseline;gap:2px 10px}
+.call-h b{font-size:14.5px;font-weight:600}
+.call-h span{font-size:12.5px;color:var(--ink-3)}
+.call ul{margin:7px 0 10px;padding-left:18px;display:grid;gap:4px;font-size:13.5px;line-height:1.45;color:var(--ink-2)}
+.call-a{display:flex;flex-wrap:wrap;align-items:center;gap:12px;font-size:13px}
+.link-btn{border:0;background:none;padding:0;color:var(--accent);font-size:13px;font-weight:500;cursor:pointer}
+@media (prefers-reduced-motion:reduce){ .box{transition:none} }
+</style>
+
+<div class="app">
+<header class="head">
+  <div class="head-top">
+    <div>
+      <h1>Карта модуля голоса</h1>
+      <p class="sub" id="sub"></p>
+    </div>
+    <div class="head-act">
+      <button type="button" class="btn" id="detail-btn" aria-pressed="false">Решения и вопросы на схеме</button>
+      <button type="button" class="btn" id="calls-btn">Созвоны</button>
+    </div>
+  </div>
+  <div class="row" id="status-row" role="group" aria-label="Подсветить задачи со статусом"></div>
+  <div class="row" id="people-row" role="group" aria-label="Подсветить задачи человека"></div>
+  <div class="nav" id="nav" aria-label="Перейти к ветке"></div>
+  <div class="shown" id="shown" hidden><span id="shown-text"></span><button type="button" class="btn" id="reset">Показать все</button></div>
+</header>
+<div class="stage">
+  <div class="scroller" id="scroller">
+    <div class="canvas" id="canvas">
+      <svg class="links" id="links" aria-hidden="true"></svg>
+      <div class="board" id="board"><div id="content"></div></div>
+    </div>
+  </div>
+  <div class="tools">
+    <button type="button" class="btn icon" id="z-out" aria-label="Уменьшить">−</button>
+    <span class="zval" id="z-val">100%</span>
+    <button type="button" class="btn icon" id="z-in" aria-label="Увеличить">+</button>
+    <button type="button" class="btn" id="z-all">Вся схема</button>
+    <button type="button" class="btn" id="z-reset">Обычный размер</button>
+  </div>
+</div>
+</div>
+<div class="scrim" id="scrim" hidden></div>
+<aside class="drawer" id="drawer" role="dialog" aria-modal="true" aria-labelledby="dr-title" hidden>
+  <div class="dr-bar"><button type="button" class="btn" id="dr-close">Закрыть</button></div>
+  <div class="dr-body" id="dr-body"></div>
+</aside>
+
+<script>
+/* ---------- ДАННЫЕ. Обновляются после каждого созвона ----------
+   Схема: «Модуль голоса» → ветки из areas в ряд слева направо → у каждой ветки канбан по статусам, которые в ней есть → задачи.
+   Подзадачи из subs рисуются под своей задачей собственным канбаном по статусам.
+   s: done сделано · doing в работе · wait ждём · todo не начато · paused отложено — от s зависит колонка
+   who: один ответственный (ключ из people) или null · help: кто помогает · due: срок · bx: задача в Битриксе
+   wait: чего ждём · subs: подзадачи [{t, s}] · dec: решения · q: вопросы · warn: на что обратить внимание
+   facts: справка · log: остальная история. Записи dec, facts, log: [источник, минута, текст],
+   источник — id созвона или ключ из sources. */
+const DATA = {
+  updated: "2026-09-26",
+  next: "2026-10-07",
+  portal: "https://profitcompany.bitrix24.ru",
+  bxGroup: 144,
+  people: {
+    n: { name: "Николай", full: "Николай Бельков", role: "бэкенд", ini: "НБ" },
+    i: { name: "Игорь", full: "Игорь Рычин", role: "бэкенд", ini: "ИР" },
+    a: { name: "Андрей", full: "Андрей Кузнецов", role: "ведёт проект", ini: "АК" }
+  },
+  sources: {
+    doc: { d: "2026-08-06", label: "Разбор API" },
+    ans: { d: "2026-09-26", label: "Ответ Андрея" }
+  },
+  calls: [
+    { id: "0805", d: "2026-08-05", n: 6447, dur: "1 ч 31 мин", with: "с Дмитрием Мушиным", pts: [
+      "Первый созвон: вместе с Мушиным разобрали API Голоса.",
+      "Кабинеты Звонобота заводим на поставщика. Модерация и расчёт стоимости у нас.",
+      "Синтез роликов подключаем сами.",
+      "Завели эпик, взяли звонок (Николай) и аудиоролик (Игорь)."] },
+    { id: "0812", d: "2026-08-12", n: 6489, dur: "1,5 мин в Битриксе", pts: [
+      "Созвон ушёл в Zoom, потом в Телемост. Расшифровки нет, часть обсуждения потеряна."] },
+    { id: "0819a", d: "2026-08-19", n: 6541, dur: "19 мин", pts: [
+      "Николай: таблица звонков и IVR, статистика в ClickHouse. Уходит в отпуск на две недели.",
+      "Действия IVR (СМС, чёрный список) делаем у себя через вебхук.",
+      "Игорь: обёртки для роликов готовы, выясняет, как Голос хранит файлы."] },
+    { id: "0819b", d: "2026-08-19", n: 6545, dur: "9 мин", pts: [
+      "Про голос не говорили."] },
+    { id: "0826", d: "2026-08-26", n: 6585, dur: "12 мин", with: "без Николая", pts: [
+      "Ролики грузим во все три хранилища Голоса.",
+      "Синтез из текста уже есть в ядре, задача на Игоре.",
+      "Игорь взял исходящий номер и тарифы.",
+      "МР Николая по звонку и IVR готов, но не залит."] },
+    { id: "0907", d: "2026-09-07", n: 6675, dur: "12 мин", with: "перенесли со 2 сентября", pts: [
+      "Игорь: исходящий номер сделан, тарифы идут тяжело. Взял себестоимость и пересчёт.",
+      "Николай доделывает IVR, дальше рассылка и болванки звонков.",
+      "От общего хранилища роликов отказались."] },
+    { id: "0916", d: "2026-09-16", n: 6849, dur: "39 мин", with: "с Дмитрием Мушиным", pts: [
+      "Карусели отключены, остались этикетки. Исходящий номер — отдельная сущность.",
+      "Пулы номеров и все четыре стадии замен закладываем сразу.",
+      "Рассылку модерируем целиком, вместе с СМС.",
+      "Черновики IVR не делаем. Игорь взял загрузку роликов в Голос."] },
+    { id: "0925", d: "2026-09-25", n: 6903, dur: "45 мин", pts: [
+      "Голос — новый канал в текущих тарифах.",
+      "Синтез, распознавание и запись — доп. услуги. Нужны поставщики доп. услуг и база их себестоимости.",
+      "Отправка скользящим окном по 20 звонков, без холда денег.",
+      "Пересчёт и статистику отложили до конца.",
+      "Решили вести карту проекта. Следующая точка — 7 октября."] }
+  ],
+  areas: [
+    { id: "base", t: "Основа", note: "Таблицы и сущности, на которых стоит модуль.", kids: [
+      { id: "call", t: "Звонок: таблица звонков", s: "done", who: "n", bx: 2133045,
+        note: "Отдельная большая таблица, как у СМС.",
+        dec: [["0805", "1:23:14", "Своя таблица звонков с партиционированием"],
+              ["0819a", "00:36", "Данные для статистики сразу пишутся в ClickHouse"]],
+        warn: ["Поля звонка ещё много раз поменяются. От этого зависят статистика и пересчёт"],
+        log: [["0826", "09:50", "МР готов, но не залит"], ["0907", "04:44", "Николай доделал сущность"], ["0925", "03:19", "Таблица ещё будет часто дополняться и меняться"]] },
+      { id: "clip", t: "Аудиоролик", s: "done", who: "i", bx: 2133047,
+        note: "Таблица роликов и обёртки: загрузка, удаление, модерация. В ту же обёртку встроен синтез из текста.",
+        dec: [["0826", "01:02", "Ролики грузим во все три хранилища Голоса"],
+              ["0907", "05:50", "Общее хранилище роликов с Голосом не делаем"]],
+        facts: [["0826", "01:02", "Хранилища Голоса: в России S3 в дата-центре, в Казахстане файлы на сервере, за рубежом S3 на зарубежном сервере"],
+                ["0805", "49:28", "В каждом кабинете Голоса у ролика свой ID, соответствие храним у себя"],
+                ["doc", "", "Метода получить список роликов у Голоса нет: потерянное соответствие не восстановить"]],
+        log: [["0805", "1:23:53", "Взял Игорь"], ["0819a", "04:08", "Готовы обёртки создания, удаления и модерации"], ["0826", "01:02", "Сущность закончена"]] },
+      { id: "mailing", t: "Голосовая рассылка и болванки звонков", s: "done", who: "n", bx: 2146715,
+        note: "Создание рассылки и болванок звонков, как у СМС.",
+        log: [["0907", "05:24", "Задачи не было, завели"], ["0907", "06:15", "Николай взял"], ["0916", "01:37", "Сделано"]] },
+      { id: "number", t: "Исходящий номер", s: "done", who: "i", bx: 2133049,
+        note: "Отдельная сущность, не имя отправителя. Карусели отключены, остались этикетки, а этикетка — это номер.",
+        dec: [["0916", "09:57", "Аренды номера на N дней не будет, только этикетки"],
+              ["0916", "06:30", "Свой номер клиент получает только через менеджера"],
+              ["0916", "11:22", "Номер привязан к кабинету Голоса. Звонок в кабинет без этого номера — ошибка агрегатора"]],
+        q: ["Есть ли абонентская плата за личную этикетку и берётся она за каждого оператора или за всех? Уточнить у закупа"],
+        facts: [["0916", "07:27", "Этикетка стоит 60 коп. за звонок, одинаково для нас и для клиента"],
+                ["0916", "07:06", "Звонок можно отправить без исходящего номера, Голос подставит свой"]],
+        log: [["0805", "00:51", "В API Голоса номер нельзя создать или арендовать, только передать при звонке"], ["0826", "05:20", "Взял Игорь"], ["0907", "03:15", "Сделано"]] },
+      { id: "ivr", t: "IVR-скрипт: хранение и проверка", s: "doing", who: "n", bx: 2133051,
+        note: "Блоки, действия и переходы сценария звонка.",
+        subs: [{ t: "Хранение, создание, валидация скрипта", s: "doing" },
+               { t: "Действия по нажатию через наш вебхук: СМС, чёрный список", s: "todo", unconf: true }],
+        dec: [["0819a", "02:40", "Действия IVR не отдаём Голосу, выполняем сами по вебхуку"],
+              ["0916", "26:40", "Для СМС в скрипте хранится ID шаблона сообщения"]],
+        log: [["0819a", "00:36", "Николай начал: миграции, создание, валидации"], ["0826", "10:32", "Начат в одном МР со звонком"], ["0907", "05:05", "«Не до конца»"], ["ans", "", "Не доделан"]] }
+    ] },
+    { id: "pipe", t: "Конвейер рассылки", note: "Этапы сверху вниз — в том порядке, в каком по ним проходит рассылка.", kids: [
+      { id: "route", t: "Маршрутизация звонка", s: "done", who: "n", bx: 2133063,
+        note: "По направлению и исходящему номеру, по той же схеме трафика, что у СМС.",
+        dec: [["0805", "1:00:57", "Маршрутизируем по оператору. Регион и вид сообщения не участвуют"],
+              ["0805", "1:02:48", "Кабинет Звонобота заводим на поставщика, а не на оператора"],
+              ["0819a", "10:47", "Агрегатор — это API-ключ и адрес. Россия и Казахстан одного поставщика — два агрегатора"]],
+        log: [["0916", "01:37", "Николай взял"], ["0925", "07:35", "Сделано"]] },
+      { id: "pools", t: "Пулы исходящих номеров", s: "done", who: "n", bx: 2151245,
+        note: "Как пулы отправителей у СМС.",
+        dec: [["0916", "12:29", "Закладываем сразу"]],
+        log: [["0916", "31:18", "Николай делает в рамках маршрутизации"], ["0925", "07:35", "Сделано"]] },
+      { id: "subst", t: "Замены исходящего номера", s: "todo", who: "n",
+        note: "Четыре стадии, как у отправителей: принудительная клиентская, пул, схема отправителя, агрегатор.",
+        dec: [["0916", "13:32", "Все четыре стадии закладываем сразу, даже замену на агрегаторе"]],
+        log: [["0805", "1:04:40", "Спорили: Николай не видел смысла подменять номер, Андрей за"], ["0916", "15:05", "Николай: докрутить замены несложно"], ["ans", "", "Пока не сделаны"]] },
+      { id: "upload", t: "Загрузка роликов в кабинеты Голоса", s: "doing", who: "i", due: "2026-09-28", bx: 2151253,
+        note: "Процесс после маршрутизации: смотрит, в какие кабинеты уходят звонки, и заливает туда ролики, которых там ещё нет.",
+        subs: [{ t: "Перенести рандомизатор в Python-скрипт отправки", s: "doing" }],
+        dec: [["0916", "36:12", "Отдельный процесс сразу после маршрутизации"],
+              ["0805", "51:08", "Нет ID ролика в кабинете — создаём ролик при отправке и запоминаем ID"]],
+        log: [["0916", "33:16", "Игорь взял"], ["0925", "00:49", "Рандомизатор встроил не туда, переделывает"], ["0925", "38:14", "Задачу «Обработка звонка. Настройка агров и приём вебхуков» удалили как дубль"]] },
+      { id: "moder", t: "Модерация", s: "doing", who: "n", bx: 2151231,
+        subs: [{ t: "Уровни: ручная, выключена, авто", s: "done" },
+               { t: "Авто: если в скрипте есть СМС, рассылка всегда идёт на модерацию", s: "done" },
+               { t: "Супер стоп-слова в СМС: сразу отклонение", s: "done" },
+               { t: "Проверка одобренных шаблонов СМС", s: "paused" }],
+        dec: [["0805", "13:52", "Модерация только у нас, на кабинетах Голоса её сняли по договору"],
+              ["0916", "27:32", "Рассылку модерируем целиком, вместе с СМС"]],
+        q: ["Как проверять шаблон СМС до отправки, если отправитель известен только после замен, а СМС создаётся по нажатию?"],
+        log: [["0916", "16:45", "Николай взял"], ["0925", "04:29", "Сделаны уровни и стоп-слова"], ["0925", "07:02", "Проверку шаблонов отложили"]] },
+      { id: "send", t: "Тарификация и отправка", s: "todo", who: "n", due: "2026-10-07", bx: 2155137,
+        note: "Отправляем пачку из 20 звонков, дальше скользящим окном: пришёл статус по одному звонку — уходит следующий. В минус клиент уйдёт максимум на одно окно.",
+        dec: [["0925", "27:19", "Скользящее окно по 20 звонков"],
+              ["0925", "24:19", "Не делаем холд денег: стоимость звонка заранее не узнать"],
+              ["0925", "26:28", "Не опрашиваем звонок на ходу: большая нагрузка, оборвать звонок всё равно нельзя"],
+              ["0925", "30:34", "Таймаут на случай, если статусы не пришли, пока не делаем, смотрим по жалобам"]],
+        q: ["Приём вебхуков по итогам звонка входит в эту задачу? Отдельной задачи больше нет",
+            "Хватит ли полей вебхука, чтобы посчитать вторую линию? Разговор с менеджером тарифицируется вдвойне"],
+        facts: [["0805", "38:46", "Вебхук приходит только после звонка, промежуточных статусов нет. Повтор раз в минуту, до трёх раз"],
+                ["0805", "34:58", "При переадресации на менеджера первый канал не закрывается, отсюда двойная тарификация"],
+                ["0925", "28:56", "Больше 20 звонков параллельно всё равно не выйдет: у Голоса ограничение по линиям"],
+                ["0805", "36:33", "Максимальный минус клиента на Голосе — около 5 000 ₽ (в расшифровке звучит и 50 000)"]],
+        log: [["0916", "15:14", "Николай описал конвейер: рассылка, болванки, маршрутизация, загрузка роликов, модерация, тарификация и отправка"], ["0925", "40:40", "Срок — 7 октября"]] }
+    ] },
+    { id: "money", t: "Тарифы и себестоимость", note: "Сколько платит клиент и сколько платим мы.", kids: [
+      { id: "tariffs", t: "Тарифы голоса: клиент, партнёр, галка «по себестоимости»", s: "doing", who: "i", help: ["n"], bx: 2133053,
+        dec: [["0925", "01:52", "Голос — новый канал в текущих тарифах, новую сущность тарифа не заводим"],
+              ["0805", "52:09", "Сетка: шаг и цена за шаг, посекундно или 15/15, 30/30, 60/60"]],
+        facts: [["0805", "20:10", "Шаг зависит от поставщика, чаще встречается у зарубежного транзита. По России посекундно"],
+                ["0805", "21:35", "Тарификация начинается, когда сняли трубку или ответил автоответчик. Гудки бесплатны"],
+                ["0907", "01:48", "У Николая есть документ со схемой тарификации, которая описывает все случаи"]],
+        log: [["0826", "09:31", "Игорь взял"], ["0907", "00:49", "Идёт тяжело"], ["0916", "08:33", "Готово на 90%"], ["0925", "42:53", "Николай и Игорь вместе добивают"]] },
+      { id: "cost", t: "Себестоимость голоса", s: "done", who: "i", bx: 2133055,
+        dec: [["0805", "41:33", "Считаем по своим себесам, сумму от Голоса для расчётов не используем"]],
+        facts: [["0805", "1:08:36", "Себес устроен как тариф: агрегатор, канал, направление, номер, цена, валюта, сетка"]],
+        log: [["0907", "04:24", "Игорь взял себес и пересчёт"], ["0925", "03:03", "Себесы заведены"]] },
+      { id: "recalc", t: "Пересчёт себестоимости", s: "paused", who: "i", bx: 2133055,
+        dec: [["0925", "03:19", "Откладываем до конца: таблица звонков ещё будет меняться"]],
+        facts: [["0925", "03:54", "Опыта пересчётов на голосе нет"]],
+        log: [["0925", "03:03", "Игорь: для пересчёта нужна статистика"]] },
+      { id: "reconcile", t: "Сверка с суммой от Голоса и алерт", s: "todo", who: null,
+        dec: [["0805", "1:10:32", "На первое время сравниваем свой расчёт с суммой от Голоса, при расхождении — алерт"]],
+        facts: [["0805", "42:31", "У Голоса себес общий средний, не по поставщикам. Сверку с поставщиками обсуждать с закупом"]] }
+    ] },
+    { id: "extras", t: "Доп. услуги", note: "Всё, что сверх секунд разговора. С 25 сентября ведём через доп. услуги.", kids: [
+      { id: "extras-core", t: "Поставщики, тарифы и себестоимость доп. услуг", s: "todo", who: "i", due: "2026-10-07", bx: 2155123,
+        subs: [{ t: "Сущность «поставщик доп. услуги» с ценой и себестоимостью", s: "todo" },
+               { t: "Тариф за синтез ролика", s: "todo" },
+               { t: "Тариф за распознавание, за секунду", s: "wait", note: "ждём секунды от Голоса" },
+               { t: "Себестоимость старых услуг: сокращатель, DMP, сбор номеров", s: "todo" },
+               { t: "Галка «по себестоимости» учитывает доп. услуги", s: "todo" }],
+        dec: [["0925", "09:10", "Синтез и распознавание — доп. услуги"],
+              ["0925", "15:36", "У одной услуги может быть несколько поставщиков с разной ценой"],
+              ["0925", "35:09", "Поставщики — отдельный раздел, не общий раздел агрегаторов"]],
+        warn: ["Сейчас себесы доп. услуг зашиты в коде, а галка «по себестоимости» у партнёра их не учитывает"],
+        q: ["Как называть: «агрегатор» или «поставщик»?",
+            "Как Голос берёт за синтез: за ролик, символы или секунды? Мушин называл около 10 коп. за ролик, в документации 40 коп.",
+            "Сколько стоит уровень распознавания: 0,6 или 60 коп.?"],
+        facts: [["0925", "18:02", "Сбор номеров: у поставщика несколько тарифов, у нас одна цена, пересчитываем вручную"],
+                ["0805", "27:04", "Распознаёт Яндекс через Голос. Цифры бесплатно, голос платно, платим за каждый пройденный уровень"],
+                ["0925", "09:02", "Движков синтеза несколько, цена у них разная"]],
+        log: [["0925", "32:52", "Игорь забирает"]] },
+      { id: "tts", t: "Синтез роликов из текста (Яндекс)", s: "done", who: "i", bx: 2133069,
+        dec: [["0805", "17:24", "Генерим у себя и отдаём Голосу готовый файл, через API Голоса не генерим"]],
+        log: [["0826", "02:11", "Код уже был в ядре, Игорь взял"], ["0907", "03:02", "Проверено"]] },
+      { id: "record", t: "Запись звонка отдельной строкой", s: "todo", who: null,
+        dec: [["0925", "20:49", "Не прячем в наценку: клиент видит цену звонка, распознавания и записи по отдельности"]],
+        q: ["Процент от суммы или фиксированная цена?"],
+        facts: [["0925", "19:51", "На Голосе запись — плюс 20% к сумме"]] },
+      { id: "units", t: "Единицы и валюты в доп. услугах", s: "todo", who: null,
+        note: "Чтобы цену доп. услуги можно было задать в процентах, за штуку или за секунду, в нужной валюте.",
+        dec: [["0925", "21:34", "Единица измерения для доп. услуг нужна"]],
+        facts: [["0925", "21:47", "Для процентов валюта не нужна, для суммы нужна"]] },
+      { id: "amd", t: "Цена за отбивку автоответчика", s: "todo", who: null,
+        dec: [["0805", "25:12", "Клиенту выставляем отдельную настраиваемую цену"]],
+        facts: [["0805", "23:35", "Мы платим только за секунды до того, как Голос определил автоответчик"]] },
+      { id: "marking", t: "Маркировка и плата за соединение (MAF)", s: "paused", who: null,
+        dec: [["0805", "22:11", "Маркировку пока не делаем"], ["0805", "1:00:22", "MAF закладываем, но не сейчас"]],
+        facts: [["0805", "21:35", "Маркировка — плюс 0,6 коп. за звонок"]] }
+    ] },
+    { id: "golos", t: "Доработки на стороне Голоса", note: "Разработчик — Миша, руководитель разработки — Данила Евграфов.", kids: [
+      { id: "seconds", t: "Секунды распознавания в API Голоса", s: "wait", who: "n", due: "2026-10-07", bx: 2155133,
+        wait: "ответа Миши: может, Голос уже их отдаёт",
+        note: "Без секунд распознавания не посчитать доп. услугу распознавания.",
+        dec: [["0925", "44:08", "Евграфова в задачу добавим после ответа Миши"]],
+        facts: [["0925", "44:08", "Мушин говорит, что такого нет, в инструкциях тоже нет"]],
+        log: [["0925", "22:18", "Николай поднял вопрос"]] },
+      { id: "breakdown", t: "Разбивка стоимости по позициям в API", s: "todo", who: null,
+        note: "Нужна, чтобы сверять стоимость по каждой доп. услуге.",
+        facts: [["0805", "1:11:03", "В личном кабинете Голоса разбивка есть, в API только общая сумма"]],
+        log: [["0805", "1:11:13", "Николай: хороший кандидат на доработку"]] },
+      { id: "golos-q", t: "Ответы Голоса на вопросы из разбора API", s: "wait", who: null,
+        wait: "ответов команды Голоса",
+        unconf: "что из этого закрыли на созвоне 12 августа в Zoom, неизвестно",
+        q: ["Коды ошибок и лимиты: сколько звонков одновременно на кабинет, как Голос отказывает «нет денег»",
+            "Статус модерации ролика, формат и размер файла, включение отбивки автоответчика через API"],
+        log: [["doc", "", "Полный список вопросов — в файле 03-вопросы.md"], ["0805", "36:56", "Николай: узнать у программистов Голоса, как устроено ограничение «нет денег»"]] }
+    ] },
+    { id: "clients", t: "Для клиентов: интерфейс и API", note: "Фронт ещё не начинали: бэкенд выдаст роуты, когда будет готов.", kids: [
+      { id: "mock", t: "Макет создания голосовой рассылки", s: "done", who: "a", bx: 2131677,
+        note: "В макете уже есть заявка на свой номер.",
+        log: [["0826", "05:48", "Андрей: макет лежит в задаче про интерфейс создания рассылки"]] },
+      { id: "api", t: "API звонков для клиентов", s: "todo", who: "n", bx: 2155139,
+        dec: [["0916", "30:09", "В API сразу предусмотреть отправку голоса и IVR"]],
+        q: ["IVR передавать целиком или по ID скрипта? По ID нужен раздел со скриптами, а черновики IVR решили пока не делать"],
+        log: [["0925", "40:58", "Николай начал продумывать"]] },
+      { id: "drafts", t: "Черновики (шаблоны) IVR", s: "paused", who: null,
+        dec: [["0916", "29:55", "Не делаем, пока не попросят клиенты"]],
+        warn: ["25 сентября снова всплыли в задаче «API звонков»"],
+        log: [["0916", "28:12", "Николай: удобно клиентам API"], ["0925", "42:14", "«Больше как черновики»"]] },
+      { id: "constructor", t: "Конструктор IVR-дерева", s: "todo", who: null,
+        dec: [["0805", "25:57", "Только в новой админке. По сути это схема каскадов с другими настройками"]] },
+      { id: "moder-ui", t: "Окно модерации рассылки для ТП", s: "todo", who: null,
+        dec: [["0916", "20:06", "Дерево, ролики и тексты СМС в одном окне, чтобы СМС не отставали от голоса. Андрей может сверстать"]] },
+      { id: "numbers-ui", t: "Раздел исходящих номеров и заявка на свой номер", s: "todo", who: null,
+        dec: [["0826", "06:28", "Отдельный раздел, как список имён отправителей"],
+              ["0805", "11:53", "Свой номер — через заявку, дальше менеджер"]],
+        q: ["Куда уходит заявка и нужны ли данные компании, как для имени отправителя?"] }
+    ] },
+    { id: "stats", t: "Статистика", note: "Делаем в конце, когда поля звонков перестанут меняться.", kids: [
+      { id: "stats-main", t: "Статистика голоса", s: "paused", who: "a", bx: 2133059,
+        note: "В Битриксе задача на Андрее.",
+        dec: [["0925", "38:30", "Откладываем на последний этап"],
+              ["0805", "1:12:07", "Отправленные звонки — таблица, как отправленные СМС: номер, статус, длительность, исходящий номер, запись"],
+              ["0805", "1:12:07", "Общий отчёт — только по звонкам"]],
+        facts: [["0805", "32:12", "Полную расшифровку разговора Голос не отдаёт: только ключевые слова по блокам IVR и аудиозапись"]] },
+      { id: "stats-tts", t: "Статистика списаний за синтез роликов", s: "todo", who: null,
+        note: "В общую статистику звонков не встраивается, нужна отдельная.",
+        warn: ["Договорились 25 сентября, но задачу в Битриксе не завели"],
+        log: [["0925", "09:29", "Николай: нужна отдельная аналитика списаний"], ["0925", "12:37", "Андрей: «Я это никуда не записал»"]] }
+    ] }
+  ]
+};
+(function () {
+"use strict";
+const D = DATA;
+const $ = (s, r = document) => r.querySelector(s);
+const $$ = (s, r = document) => Array.from(r.querySelectorAll(s));
+const esc = s => String(s == null ? "" : s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+const MS = ["янв", "фев", "мар", "апр", "мая", "июн", "июл", "авг", "сен", "окт", "ноя", "дек"];
+const MG = ["января", "февраля", "марта", "апреля", "мая", "июня", "июля", "августа", "сентября", "октября", "ноября", "декабря"];
+const dp = iso => iso.split("-").map(Number);
+const dShort = iso => { const [, m, d] = dp(iso); return d + " " + MS[m - 1]; };
+const dLong = iso => { const [, m, d] = dp(iso); return d + " " + MG[m - 1]; };
+const today = (() => { const t = new Date(); return t.getFullYear() + "-" + String(t.getMonth() + 1).padStart(2, "0") + "-" + String(t.getDate()).padStart(2, "0"); })();
+const narrow = matchMedia("(max-width: 700px)");
+
+const ORDER = ["done", "doing", "wait", "todo", "paused"];
+const LABEL = { done: "Сделано", doing: "В работе", wait: "Ждём", todo: "Не начато", paused: "Отложено" };
+const IC = {
+  done: '<svg class="ic" viewBox="0 0 16 16" aria-hidden="true"><path d="M3.4 8.6l3 3 6.2-7.2" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+  doing: '<svg class="ic" viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="6.1" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M8 3.6a4.4 4.4 0 0 1 0 8.8z" fill="currentColor"/></svg>',
+  wait: '<svg class="ic" viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="6.1" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M8 4.9V8.2l2.3 1.5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+  todo: '<svg class="ic" viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="6.1" fill="none" stroke="currentColor" stroke-width="1.8"/></svg>',
+  paused: '<svg class="ic" viewBox="0 0 16 16" aria-hidden="true"><path d="M5.7 4.2v7.6M10.3 4.2v7.6" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round"/></svg>'
+};
+
+/* ---------- индекс ---------- */
+const callById = new Map(D.calls.map(c => [c.id, c]));
+const srcDate = id => (callById.get(id) || D.sources[id] || {}).d || "";
+const cards = [];
+const byId = new Map();
+D.areas.forEach(a => a.kids.forEach(c => {
+  c.area = a;
+  ["subs", "dec", "q", "warn", "facts", "log", "help"].forEach(k => { c[k] = c[k] || []; });
+  const ents = c.dec.concat(c.facts, c.log);
+  c.calls = new Set(ents.map(e => e[0]));
+  c.upd = ents.map(e => srcDate(e[0])).sort().pop() || "";
+  cards.push(c);
+  byId.set(c.id, c);
+}));
+const bxUrl = id => `${D.portal}/workgroups/group/${D.bxGroup}/tasks/task/view/${id}/`;
+const callUrl = c => `${D.portal}/call/detail/${c.n}`;
+const person = k => D.people[k];
+const isLate = c => c.due && c.s !== "done" && c.due < today;
+
+/* ---------- фильтры: подсвечивают, схема не меняется ---------- */
+const F = { s: "", who: "", q: false, w: false, call: "" };
+const filtering = () => !!(F.s || F.who || F.q || F.w || F.call);
+function matchesExceptStatus(c) {
+  if (F.who === "none" ? c.who : F.who && c.who !== F.who) return false;
+  if (F.q && !c.q.length) return false;
+  if (F.w && !c.warn.length) return false;
+  if (F.call && !c.calls.has(F.call)) return false;
+  return true;
+}
+const matches = c => (!F.s || c.s === F.s) && matchesExceptStatus(c);
+const subMatches = (s, c) => (!F.s || s.s === F.s) && matchesExceptStatus(c);
+
+/* ---------- разметка ---------- */
+const tagHTML = s => `<span class="tag t-${s}">${IC[s]}${LABEL[s]}</span>`;
+const dueText = c => (c.due ? `${isLate(c) ? "срок был " : "до "}${dShort(c.due)}` : "");
+function srcShort(id) {
+  const call = callById.get(id);
+  if (call) return dShort(call.d);
+  const s = D.sources[id];
+  return s ? s.label.toLowerCase() + ", " + dShort(s.d) : "";
+}
+function srcLink(id) {
+  const call = callById.get(id);
+  if (call) return `<a href="${callUrl(call)}" target="_blank" rel="noopener">${dShort(call.d)}</a>`;
+  const s = D.sources[id];
+  return s ? `<span>${esc(s.label)}, ${dShort(s.d)}</span>` : "";
+}
+function whoHTML(c) {
+  if (!c.who) return '<span class="who none"><span class="av none">?</span>Не назначено</span>';
+  const p = person(c.who);
+  const help = c.help.length ? ` <span class="help">+ ${esc(c.help.map(k => person(k).name).join(", "))}</span>` : "";
+  return `<span class="who"><span class="av">${esc(p.ini)}</span>${esc(p.name)}${help}</span>`;
+}
+const qHTML = q => `<div class="note-q"><i class="gl" aria-hidden="true">?</i><span>${esc(q)}</span></div>`;
+const wHTML = w => `<div class="note-w"><i class="gl" aria-hidden="true">!</i><span>${esc(w)}</span></div>`;
+const waitHTML = c => (c.wait ? `<div class="waiting">${IC.wait}<span>Ждём ${esc(c.wait)}</span></div>` : "");
+
+function taskHTML(c) {
+  const marks = (c.q.length ? `<span class="mk q" title="Вопросов: ${c.q.length}"><i class="gl q" aria-hidden="true">?</i>${c.q.length}</span>` : "")
+    + (c.warn.length ? `<span class="mk w" title="Обратить внимание"><i class="gl w" aria-hidden="true">!</i>${c.warn.length}</span>` : "");
+  let det = waitHTML(c);
+  if (c.dec.length) det += `<div class="decs"><div class="lbl">Решено</div><ul>${c.dec.map(e => `<li>${esc(e[2])} <span class="d">· ${srcShort(e[0])}</span></li>`).join("")}</ul></div>`;
+  det += c.q.map(qHTML).join("") + c.warn.map(wHTML).join("");
+  if (c.unconf) det += `<div class="unconf">Не подтверждено: ${esc(c.unconf)}</div>`;
+  let h = `<div class="tk" data-tk="${c.id}"><div class="box task st-${c.s}" data-task="${c.id}" tabindex="0" role="button" aria-label="${esc(c.t)}. ${LABEL[c.s]}">`
+    + (c.due ? `<div class="due${isLate(c) ? " late" : ""}">${dueText(c)}</div>` : "")
+    + `<div class="b-t">${esc(c.t)}</div>`
+    + `<div class="b-bot">${whoHTML(c)}<span class="marks">${marks}</span></div>`
+    + (det ? `<div class="b-det">${det}</div>` : "")
+    + "</div>";
+  if (c.subs.length) {
+    h += '<div class="subcols">';
+    ORDER.forEach(st => {
+      const list = c.subs.map((s, i) => [s, i]).filter(([s]) => s.s === st);
+      if (!list.length) return;
+      h += `<div class="subcol" data-col="${st}"><div class="subcol-head t-${st}">${IC[st]}${LABEL[st]}<b>${list.length}</b></div><div class="subcol-body">${list.map(([s, i]) => {
+        const extra = (s.note ? ` <span class="dim-t">· ${esc(s.note)}</span>` : "") + (s.unconf ? ' <span class="dim-t">· не подтверждено</span>' : "");
+        return `<div class="box sub st-${s.s}" data-task="${c.id}" data-sub="${i}" tabindex="0" role="button" aria-label="${esc(s.t)}. ${LABEL[s.s]}"><div class="b-t">${esc(s.t)}${extra}</div></div>`;
+      }).join("")}</div></div>`;
+    });
+    h += "</div>";
+  }
+  return h + "</div>";
+}
+function laneHTML(a) {
+  const done = a.kids.filter(c => c.s === "done").length;
+  let h = `<section class="lane" data-lane="${a.id}"><div class="box area"><span class="a-t">${esc(a.t)}</span><span class="a-m">${done} из ${a.kids.length} сделано</span></div><div class="cols">`;
+  ORDER.forEach(s => {
+    const list = a.kids.filter(c => c.s === s);
+    if (!list.length) return;
+    h += `<div class="col" data-col="${s}"><div class="col-head t-${s}">${IC[s]}${LABEL[s]}<b>${list.length}</b></div><div class="col-body">${list.map(taskHTML).join("")}</div></div>`;
+  });
+  return h + "</div></section>";
+}
+function renderContent() {
+  const done = cards.filter(c => c.s === "done").length;
+  $("#content").innerHTML = `<div class="root-row"><div class="box root"><div class="r-t">Модуль голоса</div><div class="r-m">${done} из ${cards.length} задач сделано · следующая точка ${dLong(D.next)}</div></div></div>`
+    + `<div class="lanes">${D.areas.map(laneHTML).join("")}</div>`;
+  $("#nav").innerHTML = "Ветки:" + D.areas.map(a => `<button type="button" data-go="${a.id}">${esc(a.t)}</button>`).join("");
+}
+
+/* ---------- стрелки: всегда сверху вниз ---------- */
+const board = $("#board");
+const canvas = $("#canvas");
+const scroller = $("#scroller");
+const svg = $("#links");
+let k = 1;
+function drawLinks() {
+  const B = canvas.getBoundingClientRect();
+  const rel = el => { const r = el.getBoundingClientRect(); return { x: r.left - B.left, y: r.top - B.top, w: r.width, h: r.height }; };
+  const r = Math.max(3, 7 * k);
+  let h = '<defs><marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="9" markerHeight="9" markerUnits="userSpaceOnUse" orient="auto"><path class="arr" d="M0 0L10 5L0 10z"/></marker></defs>';
+  const line = (d, arrow, dim) => `<path class="ln${dim ? " dim" : ""}" d="${d}"${arrow ? ' marker-end="url(#arr)"' : ""}/>`;
+  /* шина: вертикаль от родителя, горизонталь над детьми, стрелка вниз в каждого */
+  const bus = (fromX, fromY, kids, busY) => {
+    const xs = kids.map(kd => kd.x + Math.min(kd.w / 2, 60 * k));
+    h += line(`M${fromX} ${fromY}V${busY}`);
+    h += line(`M${Math.min(fromX, xs[0])} ${busY}H${Math.max(fromX, xs[xs.length - 1])}`);
+    kids.forEach((kd, i) => { h += line(`M${xs[i]} ${busY}V${kd.y - 1}`, true, kd.dim); });
+  };
+  /* ствол слева и колено вниз к каждому ребёнку */
+  const trunk = (tx, fromY, kids, gap) => {
+    if (!kids.length) return;
+    const lastY = kids[kids.length - 1].y - gap / 2;
+    h += line(`M${tx} ${fromY}V${lastY - r}`);
+    kids.forEach(kd => {
+      const y1 = kd.y - gap / 2;
+      const x2 = kd.x + 18 * k;
+      h += line(`M${tx} ${y1 - r}Q${tx} ${y1} ${tx + r} ${y1}H${x2 - r}Q${x2} ${y1} ${x2} ${y1 + r}V${kd.y - 1}`, true, kd.dim);
+    });
+  };
+  const root = rel($(".box.root"));
+  const lanes = $$(".lane");
+  const heads = lanes.map(l => { const a = l.querySelector(".box.area"); return Object.assign(rel(a), { dim: a.classList.contains("dim") }); });
+  if (narrow.matches) trunk(root.x + 14, root.y + root.h, heads, 30);
+  else bus(root.x + 40 * k, root.y + root.h, heads, heads[0].y - 26 * k);
+  lanes.forEach((l, i) => {
+    const head = heads[i];
+    const cols = $$(".col", l).map(c => Object.assign(rel(c), { dim: c.querySelector(".col-head").classList.contains("dim") }));
+    if (!cols.length) return;
+    if (narrow.matches) trunk(head.x + 12, head.y + head.h, cols, 20);
+    else bus(head.x + Math.min(head.w / 2, 60 * k), head.y + head.h, cols, cols[0].y - 15 * k);
+  });
+  $$(".tk").forEach(t => {
+    const wrap = t.querySelector(".subcols");
+    if (!wrap) return;
+    const task = rel(t.querySelector(".box.task"));
+    const subcols = $$(".subcol", wrap).map(s => Object.assign(rel(s), { dim: s.querySelector(".subcol-head").classList.contains("dim") }));
+    if (narrow.matches) trunk(task.x + 12 * k, task.y + task.h, subcols, 18 * k);
+    else bus(task.x + Math.min(task.w / 2, 40 * k), task.y + task.h, subcols, subcols[0].y - 13 * k);
+  });
+  svg.setAttribute("width", canvas.scrollWidth);
+  svg.setAttribute("height", canvas.scrollHeight);
+  svg.innerHTML = h;
+}
+let raf = 0;
+const redraw = () => { cancelAnimationFrame(raf); raf = requestAnimationFrame(drawLinks); };
+
+/* ---------- масштаб и прокрутка ---------- */
+const PAD = 28;
+function zoomTo(nk, fx, fy) {
+  const r = scroller.getBoundingClientRect();
+  if (fx == null) { fx = r.width / 2; fy = r.height / 2; }
+  const px = (scroller.scrollLeft + fx - PAD) / k, py = (scroller.scrollTop + fy - 24) / k;
+  k = Math.max(0.3, Math.min(1.5, nk));
+  board.style.zoom = k;
+  $("#z-val").textContent = Math.round(k * 100) + "%";
+  scroller.scrollLeft = px * k + PAD - fx;
+  scroller.scrollTop = py * k + 24 - fy;
+  redraw();
+}
+$("#z-in").addEventListener("click", () => zoomTo(k * 1.15));
+$("#z-out").addEventListener("click", () => zoomTo(k / 1.15));
+$("#z-reset").addEventListener("click", () => zoomTo(1));
+$("#z-all").addEventListener("click", () => {
+  const w = board.offsetWidth, hgt = board.offsetHeight;
+  zoomTo(Math.min((scroller.clientWidth - PAD * 2) / w, (scroller.clientHeight - 60) / hgt));
+  scroller.scrollTo({ left: 0, top: 0 });
+});
+scroller.addEventListener("wheel", e => {
+  if (!(e.ctrlKey || e.metaKey)) return;
+  e.preventDefault();
+  const r = scroller.getBoundingClientRect();
+  const f = Math.abs(e.deltaY) >= 40 ? Math.exp(-Math.sign(e.deltaY) * 0.15) : Math.exp(-e.deltaY * 0.01);
+  zoomTo(k * f, e.clientX - r.left, e.clientY - r.top);
+}, { passive: false });
+let drag = null;
+let dragged = false;
+scroller.addEventListener("pointerdown", e => {
+  if (e.pointerType !== "mouse" || e.button !== 0 || narrow.matches) return;
+  drag = { x: e.clientX, y: e.clientY, sl: scroller.scrollLeft, st: scroller.scrollTop };
+  dragged = false;
+});
+window.addEventListener("pointermove", e => {
+  if (!drag) return;
+  const dx = e.clientX - drag.x, dy = e.clientY - drag.y;
+  if (!dragged && Math.hypot(dx, dy) < 5) return;
+  dragged = true;
+  scroller.classList.add("grab");
+  scroller.scrollLeft = drag.sl - dx;
+  scroller.scrollTop = drag.st - dy;
+});
+window.addEventListener("pointerup", () => {
+  if (!drag) return;
+  drag = null;
+  scroller.classList.remove("grab");
+  if (dragged) setTimeout(() => { dragged = false; }, 0);
+});
+$("#nav").addEventListener("click", e => {
+  const b = e.target.closest("[data-go]");
+  if (!b) return;
+  const lane = $(`.lane[data-lane="${b.dataset.go}"]`);
+  if (lane) lane.scrollIntoView({ inline: "start", block: "nearest", behavior: "smooth" });
+});
+
+/* ---------- шапка ---------- */
+function renderHead() {
+  const count = s => cards.filter(c => c.s === s).length;
+  const nq = cards.reduce((a, c) => a + c.q.length, 0);
+  const nw = cards.reduce((a, c) => a + c.warn.length, 0);
+  $("#status-row").innerHTML = ORDER.map(s => `<button type="button" class="fbtn t-${s}" data-f="s" data-v="${s}" aria-pressed="${F.s === s}">${IC[s]}${LABEL[s]} <b>${count(s)}</b></button>`).join("")
+    + `<button type="button" class="fbtn t-q" data-f="q" aria-pressed="${F.q}"><i class="gl" aria-hidden="true">?</i>Вопросы <b>${nq}</b></button>`
+    + `<button type="button" class="fbtn t-w" data-f="w" aria-pressed="${F.w}"><i class="gl" aria-hidden="true">!</i>Внимание <b>${nw}</b></button>`;
+  const ppl = Object.keys(D.people).filter(k => cards.some(c => c.who === k));
+  $("#people-row").innerHTML = ppl.map(k => {
+    const p = person(k);
+    const open = cards.filter(c => c.who === k && c.s !== "done").length;
+    const all = cards.filter(c => c.who === k).length;
+    return `<button type="button" class="pbtn" data-f="who" data-v="${k}" aria-pressed="${F.who === k}" title="Открытых задач: ${open}, всего: ${all}"><span class="av">${esc(p.ini)}</span>${esc(p.name)} <b>${open}</b></button>`;
+  }).join("") + `<button type="button" class="pbtn none" data-f="who" data-v="none" aria-pressed="${F.who === "none"}" title="Задачи без ответственного"><span class="av none">?</span>Не назначено <b>${cards.filter(c => !c.who).length}</b></button>`;
+  $("#shown").hidden = !filtering();
+  let txt = `Подсвечено задач: ${cards.filter(matches).length} из ${cards.length}`;
+  if (F.call) txt += ` · обсуждали ${dLong(callById.get(F.call).d)}`;
+  $("#shown-text").textContent = txt;
+}
+
+/* ---------- подсветка ---------- */
+function paintFilter() {
+  const on = filtering();
+  $$(".tk").forEach(t => {
+    const c = byId.get(t.dataset.tk);
+    const hit = matches(c);
+    const tb = t.querySelector(".box.task");
+    tb.classList.toggle("hit", on && hit);
+    tb.classList.toggle("dim", on && !hit);
+    $$(".box.sub", t).forEach(s => {
+      const sh = subMatches(c.subs[+s.dataset.sub], c);
+      s.classList.toggle("hit", on && sh);
+      s.classList.toggle("dim", on && !sh);
+    });
+    $$(".subcol", t).forEach(sc => {
+      const any = c.subs.some(x => x.s === sc.dataset.col && subMatches(x, c));
+      sc.querySelector(".subcol-head").classList.toggle("dim", on && !any);
+    });
+  });
+  $$(".lane").forEach(l => {
+    const a = D.areas.find(x => x.id === l.dataset.lane);
+    const any = a.kids.some(c => matches(c) || c.subs.some(s => subMatches(s, c)));
+    l.querySelector(".box.area").classList.toggle("dim", on && !any);
+    $$(".col", l).forEach(col => {
+      const s = col.dataset.col;
+      const anyCol = a.kids.some(c => c.s === s && (matches(c) || c.subs.some(x => subMatches(x, c))));
+      col.querySelector(".col-head").classList.toggle("dim", on && !anyCol);
+    });
+  });
+  markSelected();
+  redraw();
+}
+function render() { renderHead(); paintFilter(); }
+function markSelected() {
+  $$(".box.sel").forEach(x => x.classList.remove("sel"));
+  if (openId) $$(`.box.task[data-task="${openId}"]`).forEach(x => x.classList.add("sel"));
+}
+function afterFilter() {
+  render();
+  if (!filtering()) return;
+  const first = $(".box.hit");
+  if (first) first.scrollIntoView({ block: "center", inline: "center", behavior: "smooth" });
+}
+$("#status-row").addEventListener("click", e => {
+  const b = e.target.closest("[data-f]");
+  if (!b) return;
+  if (b.dataset.f === "s") F.s = F.s === b.dataset.v ? "" : b.dataset.v;
+  else F[b.dataset.f] = !F[b.dataset.f];
+  F.call = "";
+  afterFilter();
+});
+$("#people-row").addEventListener("click", e => {
+  const b = e.target.closest("[data-f]");
+  if (!b) return;
+  F.who = F.who === b.dataset.v ? "" : b.dataset.v;
+  F.call = "";
+  afterFilter();
+});
+$("#reset").addEventListener("click", () => { F.s = ""; F.who = ""; F.q = false; F.w = false; F.call = ""; render(); });
+$("#detail-btn").addEventListener("click", () => {
+  const on = $("#detail-btn").getAttribute("aria-pressed") !== "true";
+  $("#detail-btn").setAttribute("aria-pressed", on);
+  board.classList.toggle("detail", on);
+  redraw();
+});
+
+/* ---------- подробности ---------- */
+const drawer = $("#drawer");
+const scrim = $("#scrim");
+let openId = null;
+let lastFocus = null;
+const entsHTML = list => `<ul class="ents">${list.map(([src, t, x]) => `<li><div class="e-when">${srcLink(src)}${t ? `<span>${esc(t)}</span>` : ""}</div><div>${esc(x)}</div></li>`).join("")}</ul>`;
+const sec = (title, body) => `<div class="sec"><div class="lbl">${title}</div>${body}</div>`;
+function subsListHTML(c) {
+  return `<ul class="subs">${c.subs.map(s => `<li class="si-${s.s}" title="${LABEL[s.s]}">${IC[s.s]}<span>${esc(s.t)}${s.note ? ` <span class="dim-t">· ${esc(s.note)}</span>` : ""}${s.unconf ? ' <span class="dim-t">· не подтверждено</span>' : ""}</span></li>`).join("")}</ul>`;
+}
+function cardDrawerHTML(c) {
+  const p = c.who ? person(c.who) : null;
+  let h = `<div class="dr-crumb">${esc(c.area.t)}</div><h2 id="dr-title">${esc(c.t)}</h2>`;
+  h += `<div class="dr-meta">${tagHTML(c.s)}${c.due ? `<span class="${isLate(c) ? "late" : ""}">${dueText(c)}</span>` : ""}${c.upd ? `<span>обновлено ${dShort(c.upd)}</span>` : ""}</div>`;
+  h += p
+    ? `<div class="dr-owner"><span class="av">${esc(p.ini)}</span><span>${esc(p.full)}</span><span class="dim-t">${esc(p.role)}</span>${c.help.length ? `<span class="dim-t">· помогает ${esc(c.help.map(x => person(x).name).join(", "))}</span>` : ""}</div>`
+    : '<div class="dr-owner" style="color:var(--no-ink)"><span class="av none">?</span><span>Ответственный не назначен</span></div>';
+  if (c.bx) h += `<a class="bx" href="${bxUrl(c.bx)}" target="_blank" rel="noopener">Задача в Битриксе №${c.bx}</a>`;
+  if (c.note) h += `<p class="dr-note">${esc(c.note)}</p>`;
+  if (c.unconf) h += `<p class="dr-unconf">Не подтверждено: ${esc(c.unconf)}.</p>`;
+  if (c.wait) h += sec("Ждём", waitHTML(c));
+  if (c.subs.length) h += sec("Подзадачи", subsListHTML(c));
+  if (c.dec.length) h += sec("Решено", entsHTML(c.dec));
+  if (c.q.length) h += sec("Вопросы", c.q.map(qHTML).join(""));
+  if (c.warn.length) h += sec("Внимание", c.warn.map(wHTML).join(""));
+  if (c.facts.length) h += sec("Справка", entsHTML(c.facts));
+  if (c.log.length) h += sec("История", entsHTML(c.log));
+  return h;
+}
+function callsDrawerHTML() {
+  let h = '<h2 id="dr-title">Созвоны</h2><p class="dr-note">Что решили на каждом созвоне. «Что обсуждали» подсветит на схеме задачи с этого созвона.</p>';
+  D.calls.slice().reverse().forEach(c => {
+    const has = cards.some(x => x.calls.has(c.id));
+    h += `<article class="call">
+      <div class="call-h"><b>${dLong(c.d)}</b><span>№${c.n} · ${esc(c.dur)}${c.with ? " · " + esc(c.with) : ""}</span></div>
+      <ul>${c.pts.map(p => `<li>${esc(p)}</li>`).join("")}</ul>
+      <div class="call-a">${has ? `<button type="button" class="link-btn" data-call="${c.id}">Что обсуждали</button>` : ""}<a href="${callUrl(c)}" target="_blank" rel="noopener">Итоги в Битриксе</a></div>
+    </article>`;
+  });
+  return h;
+}
+function openDrawer(html) {
+  if (drawer.hidden) lastFocus = document.activeElement;
+  $("#dr-body").innerHTML = html;
+  drawer.hidden = false;
+  scrim.hidden = false;
+  document.body.classList.add("dr-open");
+  drawer.scrollTop = 0;
+  $("#dr-close").focus();
+}
+function openCard(id) {
+  const c = byId.get(id);
+  if (!c) return;
+  openId = id;
+  markSelected();
+  openDrawer(cardDrawerHTML(c));
+  setHash(id);
+}
+function closeDrawer() {
+  drawer.hidden = true;
+  scrim.hidden = true;
+  document.body.classList.remove("dr-open");
+  openId = null;
+  markSelected();
+  setHash(null);
+  if (lastFocus && document.contains(lastFocus)) lastFocus.focus();
+}
+function setHash(id) {
+  try { history.replaceState(null, "", id ? "#" + id : location.pathname + location.search); } catch (err) { /* кадр может не разрешать */ }
+}
+$("#content").addEventListener("click", e => {
+  if (dragged || e.target.closest("a")) return;
+  const el = e.target.closest("[data-task]");
+  if (el) openCard(el.dataset.task);
+});
+$("#content").addEventListener("keydown", e => {
+  if (e.key !== "Enter" && e.key !== " ") return;
+  const el = e.target.closest("[data-task]");
+  if (!el) return;
+  e.preventDefault();
+  openCard(el.dataset.task);
+});
+$("#calls-btn").addEventListener("click", () => { openId = null; markSelected(); openDrawer(callsDrawerHTML()); });
+$("#dr-close").addEventListener("click", closeDrawer);
+scrim.addEventListener("click", closeDrawer);
+$("#dr-body").addEventListener("click", e => {
+  const b = e.target.closest("[data-call]");
+  if (!b) return;
+  F.s = ""; F.who = ""; F.q = false; F.w = false;
+  F.call = b.dataset.call;
+  closeDrawer();
+  afterFilter();
+});
+document.addEventListener("keydown", e => { if (e.key === "Escape" && !drawer.hidden) closeDrawer(); });
+window.addEventListener("hashchange", () => {
+  const id = decodeURIComponent(location.hash.slice(1));
+  if (byId.has(id) && id !== openId) openCard(id);
+});
+
+/* ---------- старт ---------- */
+$("#sub").textContent = `${D.calls.length} созвонов с ${dLong(D.calls[0].d)} · обновлено ${dLong(D.updated)} · следующая точка ${dLong(D.next)}`;
+renderContent();
+render();
+window.addEventListener("resize", redraw);
+narrow.addEventListener("change", redraw);
+if (window.ResizeObserver) new ResizeObserver(redraw).observe(board);
+if (document.fonts && document.fonts.ready) document.fonts.ready.then(redraw);
+const first = decodeURIComponent(location.hash.slice(1));
+if (byId.has(first)) {
+  const el = $(`.box.task[data-task="${first}"]`);
+  if (el) el.scrollIntoView({ block: "center", inline: "center" });
+  openCard(first);
+}
+})();
+</script>
+</body></html>
