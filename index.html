@@ -229,6 +229,20 @@ h1{margin:0;font:700 22px/1.2 var(--f-head)}
 .call ul{margin:7px 0 10px;padding-left:18px;display:grid;gap:4px;font-size:13.5px;line-height:1.45;color:var(--ink-2)}
 .call-a{display:flex;flex-wrap:wrap;align-items:center;gap:12px;font-size:13px}
 .link-btn{border:0;background:none;padding:0;color:var(--accent);font-size:13px;font-weight:500;cursor:pointer}
+/* план к созвону */
+.pl-act{margin-top:14px}
+.pl-person{margin-top:22px}
+.pl-head{display:flex;align-items:center;gap:8px;font-size:15px;font-weight:600}
+.pl-head .dim-t{font-weight:500;font-size:13px}
+.pl-list{list-style:none;margin:10px 0 0;padding:0;display:grid;gap:10px}
+.pl-item{padding:10px 12px 11px;border-radius:10px;border:1px solid var(--line);background:var(--surface-2)}
+.pl-top{display:flex;flex-wrap:wrap;align-items:center;gap:6px 10px}
+.link-btn.pl-open{font-size:14px;font-weight:600;line-height:1.35;color:var(--ink);text-align:left}
+.link-btn.pl-open:hover{color:var(--accent)}
+.pl-what{margin:6px 0 0;font-size:13.5px;line-height:1.45;color:var(--ink-2)}
+.pl-src{margin-top:6px;font-size:12px;color:var(--ink-3)}
+.pl-src a{font-weight:600;text-decoration:none}
+.dr-back{display:inline-block;margin-bottom:12px}
 /* инструкция */
 .drawer.wide{width:min(580px,100%)}
 .guide .lead{margin:0;font-size:14.5px;line-height:1.55;color:var(--ink-2)}
@@ -275,6 +289,7 @@ h1{margin:0;font:700 22px/1.2 var(--f-head)}
       <p class="sub" id="sub"></p>
     </div>
     <div class="head-act">
+      <button type="button" class="btn" id="plan-btn" hidden>План</button>
       <button type="button" class="btn" id="guide-btn">Как читать карту</button>
       <button type="button" class="btn" id="detail-btn" aria-pressed="false">Решения и вопросы на схеме</button>
       <button type="button" class="btn" id="calls-btn">Созвоны</button>
@@ -319,6 +334,14 @@ h1{margin:0;font:700 22px/1.2 var(--f-head)}
 const DATA = {
   updated: "2026-09-26",
   next: "2026-10-07",
+  /* план к следующему созвону: [id карточки, что договорились сделать, минута записи]. Переписывать после каждого созвона */
+  plan: { d: "2026-10-07", from: "0925", items: [
+    ["send", "Сделать отправку: пачка в 20 номеров, дальше скользящим окном по пришедшим статусам", "32:19"],
+    ["seconds", "Уточнить у Миши, отдаёт ли Голос секунды распознавания. Потом добавить в задачу Евграфова с описанием доработки", "44:08"],
+    ["tariffs", "Добить тарифы голоса: они нужны для тарификации", "39:39"],
+    ["extras-core", "Себестоимость доп. услуг и поставщики синтеза и распознавания, вместе с Николаем", "32:52"],
+    ["upload", "Доделать загрузку роликов: перенести рандомизатор в Python-скрипт отправки", "01:21"]
+  ] },
   portal: "https://profitcompany.bitrix24.ru",
   bxGroup: 144,
   people: {
@@ -591,18 +614,20 @@ D.areas.forEach(a => a.kids.forEach(c => {
   cards.push(c);
   byId.set(c.id, c);
 }));
+const planIds = new Set(D.plan ? D.plan.items.map(x => x[0]) : []);
 const bxUrl = id => `${D.portal}/workgroups/group/${D.bxGroup}/tasks/task/view/${id}/`;
 const callUrl = c => `${D.portal}/call/detail/${c.n}`;
 const person = k => D.people[k];
 
 /* ---------- фильтры: подсвечивают, схема не меняется ---------- */
-const F = { s: "", who: "", q: false, w: false, call: "" };
-const filtering = () => !!(F.s || F.who || F.q || F.w || F.call);
+const F = { s: "", who: "", q: false, w: false, call: "", plan: false };
+const filtering = () => !!(F.s || F.who || F.q || F.w || F.call || F.plan);
 function matchesExceptStatus(c) {
   if (F.who === "none" ? c.who : F.who && c.who !== F.who) return false;
   if (F.q && !c.q.length) return false;
   if (F.w && !c.warn.length) return false;
   if (F.call && !c.calls.has(F.call)) return false;
+  if (F.plan && !planIds.has(c.id)) return false;
   return true;
 }
 const matches = c => (!F.s || c.s === F.s) && matchesExceptStatus(c);
@@ -809,6 +834,7 @@ function renderHead() {
   $("#shown").hidden = !filtering();
   let txt = `Подсвечено задач: ${cards.filter(matches).length} из ${cards.length}`;
   if (F.call) txt += ` · обсуждали ${dLong(callById.get(F.call).d)}`;
+  if (F.plan) txt += ` · план к ${dLong(D.plan.d)}`;
   $("#shown-text").textContent = txt;
 }
 
@@ -870,7 +896,7 @@ $("#people-row").addEventListener("click", e => {
   F.call = "";
   afterFilter();
 });
-$("#reset").addEventListener("click", () => { F.s = ""; F.who = ""; F.q = false; F.w = false; F.call = ""; render(); });
+$("#reset").addEventListener("click", () => { F.s = ""; F.who = ""; F.q = false; F.w = false; F.call = ""; F.plan = false; render(); });
 $("#detail-btn").addEventListener("click", () => {
   const on = $("#detail-btn").getAttribute("aria-pressed") !== "true";
   $("#detail-btn").setAttribute("aria-pressed", on);
@@ -919,6 +945,32 @@ function callsDrawerHTML() {
   });
   return h;
 }
+/* ---------- план к созвону ---------- */
+const PLAN = "plan";
+function planHTML() {
+  const P = D.plan;
+  const items = P.items.map(([id, t, tm]) => ({ c: byId.get(id), t, tm })).filter(x => x.c);
+  let h = `<h2 id="dr-title">План к ${dLong(P.d)}</h2><p class="dr-note">Что договорились сделать на созвоне ${dLong(callById.get(P.from).d)}. Статусы — как на карте сейчас, после созвона их обновим.</p>`;
+  h += '<div class="pl-act"><button type="button" class="btn" data-plan>Показать на схеме</button></div>';
+  const groups = Object.keys(D.people).filter(k => items.some(x => x.c.who === k)).map(k => [person(k), items.filter(x => x.c.who === k)]);
+  const none = items.filter(x => !x.c.who);
+  if (none.length) groups.push([null, none]);
+  groups.forEach(([p, list]) => {
+    h += `<section class="pl-person"><div class="pl-head">${p ? `<span class="av">${esc(p.ini)}</span>${esc(p.full)}` : '<span class="av none">?</span>Не назначено'}<span class="dim-t">${list.length}</span></div><ul class="pl-list">`;
+    list.forEach(x => {
+      h += `<li class="pl-item"><div class="pl-top">${tagHTML(x.c.s)}<button type="button" class="link-btn pl-open" data-open="${x.c.id}">${esc(x.c.t)}</button></div><p class="pl-what">${esc(x.t)}</p><div class="pl-src">${srcLink(P.from)}${x.tm ? " · " + esc(x.tm) : ""}</div></li>`;
+    });
+    h += "</ul></section>";
+  });
+  return h;
+}
+function openPlan() {
+  openId = null;
+  markSelected();
+  openDrawer(planHTML());
+  setHash(PLAN);
+}
+
 /* ---------- инструкция ---------- */
 const GUIDE = "instrukciya";
 function guideHTML() {
@@ -987,6 +1039,7 @@ ${row(`<span class="pbtn none"><span class="av none">?</span>Не назначе
 <p class="g-p">У каждой записи дата созвона и минута в записи. Нажмите на дату — откроется этот созвон в Битриксе.</p>
 <p class="g-p">Ссылку из адресной строки можно переслать коллеге — у него откроется та же задача.</p>
 <ul class="g-rows g-stack" style="--gw:228px;margin-top:16px">
+${D.plan ? row(`<span class="btn">План к ${dLong(D.plan.d)}</span>`, "Что договорились сделать к следующему созвону, по людям. «Показать на схеме» подсветит эти задачи.") : ""}
 ${row('<span class="btn">Решения и вопросы на схеме</span>', "Показывает решения, вопросы и чего ждём прямо на блоках, без кликов.")}
 ${row('<span class="btn">Созвоны</span>', "Что решили на каждом созвоне. «Что обсуждали» подсветит задачи с этого созвона.")}
 </ul>
@@ -1024,12 +1077,12 @@ function openDrawer(html, wide) {
   drawer.scrollTop = 0;
   $("#dr-close").focus();
 }
-function openCard(id) {
+function openCard(id, fromPlan) {
   const c = byId.get(id);
   if (!c) return;
   openId = id;
   markSelected();
-  openDrawer(cardDrawerHTML(c));
+  openDrawer((fromPlan ? '<button type="button" class="link-btn dr-back" data-back-plan>← К плану</button>' : "") + cardDrawerHTML(c));
   setHash(id);
 }
 function closeDrawer() {
@@ -1058,12 +1111,23 @@ $("#content").addEventListener("keydown", e => {
 });
 $("#calls-btn").addEventListener("click", () => { openId = null; markSelected(); openDrawer(callsDrawerHTML()); });
 $("#guide-btn").addEventListener("click", openGuide);
+if (D.plan) { $("#plan-btn").textContent = `План к ${dLong(D.plan.d)}`; $("#plan-btn").hidden = false; }
+$("#plan-btn").addEventListener("click", openPlan);
 $("#dr-close").addEventListener("click", closeDrawer);
 scrim.addEventListener("click", closeDrawer);
 $("#dr-body").addEventListener("click", e => {
+  const o = e.target.closest("[data-open]");
+  if (o) { openCard(o.dataset.open, true); return; }
+  if (e.target.closest("[data-back-plan]")) { openPlan(); return; }
+  if (e.target.closest("[data-plan]")) {
+    F.s = ""; F.who = ""; F.q = false; F.w = false; F.call = ""; F.plan = true;
+    closeDrawer();
+    afterFilter();
+    return;
+  }
   const b = e.target.closest("[data-call]");
   if (!b) return;
-  F.s = ""; F.who = ""; F.q = false; F.w = false;
+  F.s = ""; F.who = ""; F.q = false; F.w = false; F.plan = false;
   F.call = b.dataset.call;
   closeDrawer();
   afterFilter();
@@ -1072,6 +1136,7 @@ document.addEventListener("keydown", e => { if (e.key === "Escape" && !drawer.hi
 window.addEventListener("hashchange", () => {
   const id = decodeURIComponent(location.hash.slice(1));
   if (id === GUIDE) openGuide();
+  else if (id === PLAN && D.plan) openPlan();
   else if (byId.has(id) && id !== openId) openCard(id);
 });
 
@@ -1085,6 +1150,7 @@ if (window.ResizeObserver) new ResizeObserver(redraw).observe(board);
 if (document.fonts && document.fonts.ready) document.fonts.ready.then(redraw);
 const first = decodeURIComponent(location.hash.slice(1));
 if (first === GUIDE) openGuide();
+else if (first === PLAN && D.plan) openPlan();
 else if (byId.has(first)) {
   const el = $(`.box.task[data-task="${first}"]`);
   if (el) el.scrollIntoView({ block: "center", inline: "center" });
